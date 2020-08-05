@@ -62,24 +62,60 @@ var radial_segments = 6;
 var height_segments = 15;
 var open_ended = false;
 var theta_start = 0.00;
-var theta_length = Math.PI / 6;
+var theta_length = Math.PI / 24;
 var cone_segments = [];
 var selected_cone_segments = [];
 var colors ={  
             // The world is a carousel of color,
             // Wonderful, wonderful color.
-			red: [255, 0, 0],
-			orange: [255, 127, 0],
 			yellow: [255, 255, 0],
-			chartreuse: [128, 255, 0],
-			green: [0, 255, 0],
-			spring: [0, 255, 127],
-			cyan: [0, 255, 255],
-			azure: [0, 127, 255],
-			blue: [0, 0, 255],
-			violet: [128, 0, 255],
+			gold: [255, 215, 0],
+			amber: [255, 191, 0],
+			tangerine: [242, 133, 0],
+			orange: [255, 127, 0],
+			persimmon: [236, 88, 0],
+			vermilion: [227, 66, 52],
+			scarlet: [255, 36, 0],
+			red: [255, 0, 0],
+			amaranth: [229, 43, 80],
+			crimson: [153, 0, 0],
+			raspberry: [179, 68, 108],
+			rose: [255, 0, 127],
+			deep_pink: [255, 20, 147],
+			cerise: [255, 0, 167],
+			fuchsia: [255, 0, 128],
 			magenta: [255, 0, 255],
-			rose: [255, 0, 127]
+			phlox: [87, 0, 100],
+			purple: [128, 0,128],
+			amethyst: [153, 102, 204],
+			violet: [128, 0, 255],
+			indigo: [75, 0, 130],
+			ultramarine: [18,10,143],
+			iris: [90, 79, 207],
+			blue: [0, 0, 255],
+			sapphire: [15, 82, 186],
+			cerulean: [2, 164, 211],
+			cobalt: [0, 71, 171],
+			azure: [0, 127, 255],
+			cornflower: [100, 149, 237],
+			capri: [27, 85, 131],
+			sky: [135, 206, 235],
+			cyan: [0, 255, 255],
+			turquoise: [64, 224,208],
+			aquamarine: [0, 255, 191],
+			mint: [62, 180, 137],
+			spring: [0, 255, 127],
+			emerald: [80, 200, 120],
+			erin: [0, 255, 63],
+			jade: [0, 168, 107],
+			green: [0, 255, 0],
+			neon_green: [57, 255, 20],
+			harlequin: [63, 255, 0],
+			slime_green: [101, 255, 0],
+			chartreuse: [128, 255, 0],
+			spring_bud: [167, 252, 0],
+			lime: [50, 205, 50],
+			lemon: [255,247,0]
 };
 
 
