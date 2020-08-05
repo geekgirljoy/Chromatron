@@ -1,0 +1,22 @@
+body{ 
+    margin: 0;
+    background-color: black;
+}
+canvas{ 
+    display: block; 
+}
+h1{
+    color: white;
+    height:50px;
+}
+
+#instructions{
+    position:absolute;
+    color: #ffffff;
+    font-family: verdana;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 100px;
+    font-weight: bold;
+}
