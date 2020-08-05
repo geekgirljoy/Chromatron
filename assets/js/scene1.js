@@ -188,7 +188,10 @@ function Raycast(){
 		
 		// Update the renderer with the new selection
 		outline_pass.selectedObjects = selected_cone_segments;
-
+	}
+	else{
+		selected_cone_segments = []; // Purge previous selection
+		outline_pass.selectedObjects = selected_cone_segments;
 	}
 }
 
