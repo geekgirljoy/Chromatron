@@ -16,16 +16,22 @@ import{ Raycaster } from './three.js-master/src/core/Raycaster.js';
 var scene = new THREE.Scene();
 scene.background = new THREE.Color(0xaaaacc);
 
+
 // New Camera
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 2; // distance
+
 
 // Add the WebGLRenderer
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight - 100);
+renderer.domElement.addEventListener("click", MouseClick, true);
 document.body.appendChild(renderer.domElement);
+
 
 // Image Effects / Post Processing
 var composer = new EffectComposer(renderer);
+
 
 // Outline pass of highlighted segment
 var outline_pass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), scene, camera);
@@ -36,15 +42,18 @@ outline_pass.pulsePeriod = 2;
 outline_pass.visibleEdgeColor.set('#ffffff');
 outline_pass.hiddenEdgeColor.set('#0000ff');
 
+
 // Add multi-pass renderings to the effects composer
 var renderPass = new RenderPass(scene, camera);
 composer.addPass(renderPass);
 composer.addPass(outline_pass);
 
+
 // Mouse Movement
 var raycaster = new THREE.Raycaster(); 
 var mouse = new THREE.Vector2(); 
-window.addEventListener('mousemove', TrackMouse, false);
+window.addEventListener('mousemove', MouseMove, false);
+
 
 // Handle window resizing
 window.addEventListener('resize', function(){
@@ -64,7 +73,7 @@ var open_ended = false;
 var theta_start = 0.00;
 var theta_length = Math.PI / 24;
 var cone_segments = [];
-var selected_cone_segments = [];
+var highlighted_cone_segments = [];
 var colors ={  
             // The world is a carousel of color,
             // Wonderful, wonderful color.
@@ -119,22 +128,16 @@ var colors ={
 };
 
 
-// Create color cone segments
+// Create color cone segments and add them to the scene
 var color_index = 1;
 for (var color in colors){
-	cone_segments.push(NewConeSegment(radius, height, radial_segments, height_segments, open_ended, theta_start, color_index, theta_length, [0,0,0], colors[color]));
+	var segment = NewConeSegment(radius, height, radial_segments, height_segments, open_ended, theta_start, color_index, theta_length, [0,0,0], colors[color]);
+	segment.color = color;
+	segment.rotation.x = Math.PI * 1.2;
+	cone_segments.push(segment);
+	scene.add(segment);
 	color_index++;
 }
-
-
-// Add segments to the scene
-cone_segments.forEach(function(segment){
-	segment.rotation.x = Math.PI * 1.2;
-	scene.add(segment);
-});
-
-
-camera.position.z = 2; // distance
 
 
 ///////////////////////////////////
@@ -165,34 +168,50 @@ export function Animate_Scene_One(){
 
 
 // When the Mouse moves
-function TrackMouse(event){
+function MouseMove(event){
 	mouse.x = (event.clientX / window.innerWidth) * 2 - 1; 
 	mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;               
-	Raycast(); // Are we over anything?
+	var collisions = Raycast(); // Are we over anything?
+	
+	if (collisions.length > 0){
+		// The first object the ray collided with is our selection
+		var selection = collisions[0].object;
+		highlighted_cone_segments = []; // Purge previous selection
+		highlighted_cone_segments.push(selection); // Add new selection
+		
+		// Update the renderer with the new selection
+		outline_pass.selectedObjects = highlighted_cone_segments;
+	}
+	else{
+		highlighted_cone_segments = []; // Purge previous selection
+		outline_pass.selectedObjects = highlighted_cone_segments;
+	}
 } 
+
+
+// When a click happens
+function MouseClick(event){
+    raycaster.setFromCamera(mouse, camera);
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1; 
+	mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;               
+	var collisions = Raycast(); // Are we over anything?
+	
+	if (collisions.length > 0){
+		// The first object the ray collided with is our selection
+		var selection = collisions[0].object;
+		console.log(selection.color);
+		//selection.color === the key to the selected color 
+	}
+}
 
 
 // Scene 1 Raycast
 function Raycast(){
-
 	// Go Go Gadget Raycaster!
 	raycaster.setFromCamera(mouse, camera);
 	var collisions = raycaster.intersectObject(scene, true);
-
-	if (collisions.length > 0){
-
-		// The first object the ray collided with is our selection
-		var selection = collisions[0].object;
-		selected_cone_segments = []; // Purge previous selection
-		selected_cone_segments.push(selection); // Add new selection
-		
-		// Update the renderer with the new selection
-		outline_pass.selectedObjects = selected_cone_segments;
-	}
-	else{
-		selected_cone_segments = []; // Purge previous selection
-		outline_pass.selectedObjects = selected_cone_segments;
-	}
+	
+	return collisions;
 }
 
 
