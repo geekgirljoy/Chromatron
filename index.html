@@ -3,43 +3,27 @@
     <head>
         <meta charset="utf-8">
         <title>Chromatron</title>
-        <link rel="stylesheet" type="text/css" href="./assets/css/style.css">		
+        <link rel="stylesheet" type="text/css" href="./assets/css/style.css">        
     </head>
     <body>
         <center>
     
             <h1>Chromatron</h1>
             <div id="instructions"></div>
-        
-        
-		
-        <script type="module" src="./assets/js/scene1.js"></script>
-        <script type="module">
+             
+            <script type="module" src="./assets/js/chromatron.js"></script>
+            <script type="module">
 
-        function ChangeTitle(title){
-            document.title = title;
-        }
-        
-        function ChangeInstructions(instructions){
-            document.getElementById('instructions').innerHTML = instructions;
-        }
+                // Import SceneChange & Animate
+                import {SceneChange} from './assets/js/chromatron.js';
+                import {Animate} from './assets/js/chromatron.js';
 
-        // Import the animation functions for the scenes
-        import {Animate_Scene_One} from './assets/js/scene1.js';
-
-        // Scene 1 - The Carousel of Color
-        window.scene_one = true;
-        ChangeTitle('Chromatron: Carousel of Color');
-        ChangeInstructions('Select the color that seems closest to your favorite color');
-        Animate_Scene_One(); // Start Animation
-       
-        // Add scene change listeners here
-        
-        // Scene 2 : Hue Going My Way   
-        // Scene 3 : Chro-my-goodness!!
-        
-
-        </script>
+                // Scene 1 - The Carousel of Color
+                SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color');
+                
+                Animate(); // Start Animation
+      
+            </script>
 </center>
     </body>
 </html>
