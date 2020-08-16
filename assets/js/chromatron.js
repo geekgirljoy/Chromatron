@@ -120,6 +120,13 @@ var colors ={
 };
 
 
+
+
+///////////////////////////////////
+// Scene Functions               //
+///////////////////////////////////
+
+
 //////////////////////////////////////////
 //                                      //
 //    Scene 1 : Carousel of Color       //
@@ -162,48 +169,77 @@ function CarouselOfColor(){
 
 
 
+//////////////////////////////////////////
+//                                      //
+//    Scene 2 : Color Conformation      //
+//                                      //
+//////////////////////////////////////////
+function ColorConformation(){
+
+    
+	// Display the color
+	var swatch_geometry = new THREE.BoxGeometry(1, 0.3, 0.01);
+	var swatch_texture = new THREE.Texture(GenerateGradientTexture(colors[window.base_color], [0,0,0]));
+	swatch_texture.needsUpdate = true;
+	
+	// Use the gradient texture as the material for the cone segment
+	var swatch_material = new THREE.MeshBasicMaterial({color: [0,0,0],
+												map: swatch_texture});
+	var swatch = new THREE.Mesh(swatch_geometry, swatch_material);
+	swatch.position.y += 1.2;
+	
+	var color_name = window.base_color.toString();
+	Text(swatch, color_name.charAt(0).toUpperCase() + color_name.slice(1), [0,0,0], 0.08, 0, 0, 0);
+
+	window.scene.add(swatch);
+	window.scene_objects.push(swatch);
+	
+	// ask to proceed
+	var continue_btn = CubeButton(0.45, colors['harlequin'],  0, 0.4, 0, 'Continue >', 0.04, [255, 255, 255]);
+	window.scene.add(continue_btn);
+	window.scene_objects.push(continue_btn);
+	
+	// ask to go back
+	var go_back_btn = CubeButton(0.45, [220, 53, 69],  0, -0.4, 0, '< Go Back', 0.04, [255, 255, 255]);	
+	window.scene.add(go_back_btn);
+	window.scene_objects.push(go_back_btn);
+
+}// / ColorConformation()
 
 
 ///////////////////////////////////
-// Functions                     //
+// / Scene Functions             //
 ///////////////////////////////////
 
-function ClearScene(){
-    while(window.scene.children.length > 0){         
-        window.scene.remove(window.scene.children[0]);     
-    }    
-} // / ClearScene()
-
-function RGBColorToHex(rgb_array){
-
-   var hex_string = 0x00;
-    
-    rgb_array.forEach(function(color){
-           
-           var hex = Number(color).toString(16); 
-           if (hex.length < 2) { 
-               hex = "0" + hex; 
-            }
-           
-           hex_string = hex_string + hex;
-    });
-    
-    return parseInt(hex_string, 16);
-} // / RGBColorToHex()
 
 
+///////////////////////////////////
+// Scene Config Functions        //
+///////////////////////////////////
 
 // The Animation Loop
 export function Animate(){
     
-    if(window.current_scene === 1){
+    if(window.current_scene === 1){ // Carousel Of Color
         // For all the RGB cone segments
         window.scene_objects.forEach(function(segment){
            // Rotate around the Y axis each frame
            segment.rotation.y += 0.0075;
         });
     }
-    
+	if(window.current_scene === 2){ // Color Conformation 
+	
+	    // For all the cube buttons
+        window.scene_objects.forEach(function(scene_element){
+			
+			if(scene_element.type === 'button'){
+			   // Rotate around the X & Z axis each frame
+
+			   scene_element.rotation.x += 0.01;
+			   scene_element.rotation.z += 0.01;
+			}
+        });
+	}
     
     // Render the WebGL image
     window.renderer.render(window.scene, window.camera);
@@ -216,6 +252,51 @@ export function Animate(){
     
 } // / Animate()
 //Animate(); // Start Animation
+
+
+
+// Change the scene to a different selection
+export function SceneChange(scene_number, title, instructions){
+	window.scene_objects = [];
+    window.current_scene = scene_number;
+    document.title = title;
+    document.getElementById('instructions').innerHTML = instructions;
+    
+    // Pickup our toys
+    ClearScene();
+    
+    // What shall we play with now?
+    if(scene_number === 1){
+        CarouselOfColor();
+    }
+    else if(scene_number === 2){
+        ColorConformation();
+    }
+	/*
+	else if(scene_number === 3){
+        Scene3Function();
+    }
+    else if(scene_number === 4){
+        Scene4Function();
+    }
+    
+    */
+} // / SceneChange()
+
+function ClearScene(){
+    while(window.scene.children.length > 0){         
+        window.scene.remove(window.scene.children[0]);     
+    }    
+} // / ClearScene()
+
+///////////////////////////////////
+// / Scene Config Functions      //
+///////////////////////////////////
+
+
+///////////////////////////////////
+// Mouse Functions               //
+///////////////////////////////////
 
 
 // When the Mouse moves
@@ -251,7 +332,6 @@ function MouseClick(event){
 
     var collisions = Raycast(); // Are we over anything?
     
-
     if (collisions.length > 0){
         console.log(window.scene_number);
         
@@ -261,12 +341,13 @@ function MouseClick(event){
         if(window.current_scene === 1){
             CarouselOfColorMouseClickHandeler(selection);
         }
-        /*
+        
         else if(window.current_scene === 2){
-            SceneTwoMouseClickHandeler();
+            ColorConformationMouseClickHandeler(selection);
         }
+		/*
         else if(window.current_scene === 3){
-            SceneTwoMouseClickHandeler();
+            SceneThreeMouseClickHandeler();
         }
         */
         
@@ -282,34 +363,8 @@ function CarouselOfColorMouseClickHandeler(selection){
         console.log(selection.color);
         window.base_color = selection.color;
         //selection.color & window.base_color === the key to the selected color
-
-        ClearScene();
         
-        // Display the color
-        var swatch_geometry = new THREE.BoxGeometry(0.3, 0.3, 0.1);
-        var swatch_texture = new THREE.Texture(GenerateGradientTexture(colors[selection.color], [0,0,0]));
-        swatch_texture.needsUpdate = true;
-        
-        // Use the gradient texture as the material for the cone segment
-        var swatch_material = new THREE.MeshBasicMaterial({color: [0,0,0],
-                                                    map: swatch_texture});
-        var swatch = new THREE.Mesh(swatch_geometry, swatch_material);
-        swatch.position.y += 0.4;
-        
-        window.scene.add(swatch);
-        
-        
-        // ask to proceed or go back
-        var btn_geometry = new THREE.BoxGeometry(0.4, 0.2, 1);
-        //var btn_material = new THREE.MeshBasicMaterial({color: RGBColorToHex(colors['harlequin'])});
-        var btn_material = new THREE.MeshBasicMaterial({color: 0xdc3545});
-        
-        var go_back_btn = new THREE.Mesh(btn_geometry, btn_material);
-        go_back_btn.type = 'button';
-        window.scene.add(go_back_btn);
-        
-        Text(go_back_btn, '< Go Back', 0xffffff, 0.03, 0, 0, 1);
-        
+        SceneChange(2, 'Chromatron: Color Conformation', 'Continue with this color?')
         
     } // / clicked the carousel
     else if(selection.type === 'button'){ // clicked on a button
@@ -319,11 +374,63 @@ function CarouselOfColorMouseClickHandeler(selection){
         
         
         // Go Forward button clicked
-        //SceneChange(2, 'Chromatron: Hue Going My Way?', '');
+        //SceneChange(3, 'Chromatron: Hue Going My Way?', '');
         
         
     } // / clicked on a button
 } // / CarouselOfColorMouseClickHandeler()
+
+
+
+function ColorConformationMouseClickHandeler(selection){
+    
+    if(selection.type === 'button'){ // clicked on a button
+        
+		
+		// if go back
+			// Go Back button clicked
+			SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color');
+			
+        
+		// if continue
+			// Go Forward button clicked
+			//SceneChange(3, 'Chromatron: Hue Going My Way?', '');
+        
+        
+    } // / clicked on a button
+} // / ColorConformationMouseClickHandeler()
+
+
+
+
+
+///////////////////////////////////
+// / Mouse Functions             //
+///////////////////////////////////
+
+
+///////////////////////////////////
+// Other Functions               //
+///////////////////////////////////
+
+
+function RGBColorToHex(rgb_array){
+
+   var hex_string = 0x00;
+    
+    rgb_array.forEach(function(color){
+           
+           var hex = Number(color).toString(16); 
+           if (hex.length < 2) { 
+               hex = "0" + hex; 
+            }
+           
+           hex_string = hex_string + hex;
+    });
+    
+    return parseInt(hex_string, 16);
+} // / RGBColorToHex()
+
 
 
 // Scene Raycaster
@@ -370,10 +477,12 @@ function NewConeSegment(radius,
 } // / Raycast()
 
 
+
+
 // Generate and return a canvas with a 2 point linear gradient between start and stop 
 function GenerateGradientTexture(start, stop){
     var size = 512;
-
+	
     // Create a canvas to paint on
     var canvas = document.createElement('canvas');
     canvas.width = size;
@@ -396,57 +505,66 @@ function GenerateGradientTexture(start, stop){
 } // / GenerateGradientTexture()
 
 
-export function SceneChange(scene_number, title, instructions){
-    window.current_scene = scene_number;
-    document.title = title;
-    document.getElementById('instructions').innerHTML = instructions;
-    
-    // Pickup our toys
-    ClearScene();
-    
-    // What shall we play with now?
-    if(scene_number === 1){
-        CarouselOfColor();
-    }
-    /*
-    
-    if(scene_number === 2){
-        Scene2Function();
-    }
-    else if(scene_number === 3){
-        Scene3Function();
-    }
-    else if(scene_number === 4){
-        Scene4Function();
-    }
-    
-    */
-} // / SceneChange()
 
 
+function Text(parent_obj, text_string, color, size, x, y, z, rot_x = 0, rot_y = 0, rot_z = 0){
 
-function Text(parent_obj, text_string, color, size, x, y, z){
-
-    window.font_loader.load( './assets/js/Pacifico_Regular.js', function ( font ) {
+    window.font_loader.load('./assets/js/Pacifico_Regular.js', function(font){
         var text_material = new THREE.MeshBasicMaterial({color: color});
-        var text_geometry = new THREE.TextGeometry( text_string, {
+        var text_geometry = new THREE.TextGeometry(text_string, {
             font: font,
             size: size,
             height: 0.01,
             curveSegments: 3,
             bevelEnabled: false,
-            bevelThickness: 0.01,
-            bevelSize: 0.01,
-            bevelSegments: 3,
         } );
         text_geometry.center();
         
-        var mesh = new THREE.Mesh( text_geometry, text_material );
+        var mesh = new THREE.Mesh(text_geometry, text_material);
         mesh.position.x = x;
         mesh.position.y = y;
         mesh.position.z = z;
+		
+		mesh.rotation.x += rot_x;
+		mesh.rotation.y += rot_y;
+		mesh.rotation.z += rot_z;
 
         parent_obj.add(mesh);
-    } );
+    });
 } // / Text()
 
+
+
+function CubeButton(button_size, button_color, x, y, z, text_value, text_size, text_color){
+	
+	var btn_geometry = new THREE.BoxGeometry(button_size, button_size, button_size);
+	
+	var btn_texture = new THREE.Texture(GenerateGradientTexture(button_color, [0,0,0]));
+	btn_texture.needsUpdate = true;
+	
+	var btn_material = new THREE.MeshBasicMaterial({color: button_color,
+	                                                map: btn_texture});
+	
+	var btn = new THREE.Mesh(btn_geometry, btn_material);
+	btn.type = 'button';
+	
+	btn.position.x = x;
+    btn.position.y = y;
+    btn.position.z = z;
+	
+	
+	// Add text to button faces
+	Text(btn, text_value, text_color, text_size, 0, 0, button_size/2);
+	Text(btn, text_value, text_color, text_size, 0, 0, button_size/2 * (1 * -1), 0, 3.15, 0);
+	Text(btn, text_value, text_color, text_size, 0, button_size/2, 0, -89.5, 0, 0);
+	Text(btn, text_value, text_color, text_size, 0,  button_size/2 * (1 * -1), 0, 89.5, 0);
+	Text(btn, text_value, text_color, text_size, button_size/2, 0, 0, 0, 89.5, 0);
+	Text(btn, text_value, text_color, text_size, button_size/2 * (1 * -1), 0, 0, 0, -89.5, 0);
+	
+	
+	return btn;
+}
+
+///////////////////////////////////
+// / Other Functions             //
+///////////////////////////////////
