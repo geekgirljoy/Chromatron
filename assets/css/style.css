@@ -20,3 +20,9 @@ h1{
     top: 100px;
     font-weight: bold;
 }
+
+
+@font-face {
+    font-family: 'Pacifico';
+    src: url('../../assets/fonts/Pacifico-Regular.ttf');
+}

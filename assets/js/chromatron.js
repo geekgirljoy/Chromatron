@@ -64,7 +64,7 @@ window.font_loader = new THREE.FontLoader();
 window.highlighted_objects = [];
 window.scene_objects = [];
 
-
+    
 
 var colors ={
     // The world is a carousel of color,
@@ -165,6 +165,8 @@ function CarouselOfColor(){
     }
     
     window.scene_objects = cone_segments;
+    window.base_color = null;
+    window.current_color = null;
 }// / CarouselOfColor()
 
 
@@ -175,37 +177,254 @@ function CarouselOfColor(){
 //                                      //
 //////////////////////////////////////////
 function ColorConformation(){
-
+    // Display the color
+    var swatch_geometry = new THREE.BoxGeometry(1, 0.3, 0.01);
+    var swatch_texture = new THREE.Texture(GenerateGradientTexture(colors[window.base_color], [0,0,0]));
+    swatch_texture.needsUpdate = true;
     
-	// Display the color
-	var swatch_geometry = new THREE.BoxGeometry(1, 0.3, 0.01);
-	var swatch_texture = new THREE.Texture(GenerateGradientTexture(colors[window.base_color], [0,0,0]));
-	swatch_texture.needsUpdate = true;
-	
-	// Use the gradient texture as the material for the cone segment
-	var swatch_material = new THREE.MeshBasicMaterial({color: [0,0,0],
-												map: swatch_texture});
-	var swatch = new THREE.Mesh(swatch_geometry, swatch_material);
-	swatch.position.y += 1.2;
-	
-	var color_name = window.base_color.toString();
-	Text(swatch, color_name.charAt(0).toUpperCase() + color_name.slice(1), [0,0,0], 0.08, 0, 0, 0);
+    // Use the gradient texture as the material for the cone segment
+    var swatch_material = new THREE.MeshBasicMaterial({color: [0,0,0],
+                                                map: swatch_texture});
+    var swatch = new THREE.Mesh(swatch_geometry, swatch_material);
+    swatch.position.y += 1.2;
+    
+    var color_name = window.base_color.toString();
+    Text(swatch, color_name.charAt(0).toUpperCase() + color_name.slice(1), [255,255,255], 0.08, 0, 0, 0);
 
-	window.scene.add(swatch);
-	window.scene_objects.push(swatch);
-	
-	// ask to proceed
-	var continue_btn = CubeButton(0.45, colors['harlequin'],  0, 0.4, 0, 'Continue >', 0.04, [255, 255, 255]);
-	window.scene.add(continue_btn);
-	window.scene_objects.push(continue_btn);
-	
-	// ask to go back
-	var go_back_btn = CubeButton(0.45, [220, 53, 69],  0, -0.4, 0, '< Go Back', 0.04, [255, 255, 255]);	
-	window.scene.add(go_back_btn);
-	window.scene_objects.push(go_back_btn);
+    window.scene.add(swatch);
+    window.scene_objects.push(swatch);
+    
+    // ask to proceed
+    var continue_btn = CubeButton(0.45, colors['harlequin'], [0, 0, 0],  0, 0.4, 0, 'Continue >', 52, [255, 255, 255], (512/2) - 115, (512/2));
+    continue_btn.action = 'change scene';
+    continue_btn.action_data = '3';
+    
+    window.scene.add(continue_btn);
+    window.scene_objects.push(continue_btn);
+    
+    // ask to go back
+    var go_back_btn = CubeButton(0.45, [220, 53, 69], [0,0,0], 0, -0.4, 0, '< Go Back', 52, [255, 255, 255], (512/2) - 130, (512/2));    
+    go_back_btn.action = 'change scene';
+    go_back_btn.action_data = '1';
+    
+    window.scene.add(go_back_btn);
+    window.scene_objects.push(go_back_btn);
 
 }// / ColorConformation()
 
+
+//////////////////////////////////////////
+//                                      //
+//    Scene 3 : Hue Going My Way        //
+//                                      //
+//////////////////////////////////////////
+function HueGoingMyWay(){
+   // Display the color swatch button
+    var swatch_geometry = new THREE.BoxGeometry(1, 0.3, 0.01);
+    
+    if(window.current_color == null){
+        var c = colors[window.base_color];
+        window.current_color = [c[0], c[1], c[2]];
+    }
+    var swatch_texture = new THREE.Texture(GenerateGradientTexture(window.current_color, window.current_color));    
+    swatch_texture.needsUpdate = true;
+    
+    // Use the gradient texture as the material for the cone segment
+    var swatch_material = new THREE.MeshBasicMaterial({color: [0,0,0],
+                                                map: swatch_texture});
+    var swatch = new THREE.Mesh(swatch_geometry, swatch_material);
+    swatch.position.y += 1.2;
+        
+    //var color_name = window.base_color.toString();
+    var swatch_text = 'R:'+window.current_color[0].toString() + ' '
+                    + 'G:'+window.current_color[1].toString() + ' '
+                    + 'B:'+window.current_color[2].toString();
+    
+    if((window.current_color[0] + window.current_color[1] + window.current_color[2]) > 382)
+    {
+        var swatch_text_color = [0,0,0];
+    }
+    else{
+        var swatch_text_color = [255,255,255];
+    }
+    Text(swatch,swatch_text, swatch_text_color, 0.08, 0, 0, 0);
+
+    swatch.type = 'swatch button';
+    swatch.action = 'change scene';
+    swatch.action_data = 1;
+    
+    window.scene.add(swatch);
+    window.scene_objects.push(swatch);
+
+
+    if(window.current_color[0]+30 <= 255){
+        // R+30
+        var R30_btn = CubeButton(0.25, [window.current_color[0]+30,window.current_color[1], window.current_color[2]], [255,255,255], -0.35, 0.70, 0, '+30', 128, [255, 0, 0], (512/2) - 115, (512/2));
+        R30_btn.action = 'red';
+        R30_btn.action_data = '30';
+        window.scene.add(R30_btn);
+        window.scene_objects.push(R30_btn);
+    }
+
+    if(window.current_color[0]+15 <= 255){
+        // R+15
+        var R15_btn = CubeButton(0.25, [window.current_color[0]+15,window.current_color[1], window.current_color[2]], [255,255,255], -0.35, 0.35, 0, '+15', 128, [255, 0, 0], (512/2) - 115, (512/2));
+        R15_btn.action = 'red';
+        R15_btn.action_data = '15';
+        window.scene.add(R15_btn);
+        window.scene_objects.push(R15_btn);
+    }
+
+    if(window.current_color[0]+1 <= 255){
+        // R+1
+        var R1_btn = CubeButton(0.25, [window.current_color[0]+1,window.current_color[1], window.current_color[2]], [255,255,255], -0.35, 0, 0, '+1', 128, [255, 0, 0], (512/2) - 115, (512/2));
+        R1_btn.action = 'red';
+        R1_btn.action_data = '1';
+        window.scene.add(R1_btn);
+        window.scene_objects.push(R1_btn);
+    }
+
+    if(window.current_color[1]+30 <= 255){
+        // G+30
+        var G30_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1]+30, window.current_color[2]], [255,255,255],  0, 0.70, 0, '+30', 128, [0, 255, 0], (512/2) - 115, (512/2));
+        G30_btn.action = 'green';
+        G30_btn.action_data = '30';
+        window.scene.add(G30_btn);
+        window.scene_objects.push(G30_btn);
+    }
+
+    if(window.current_color[1]+15 <= 255){
+        // G+15
+        var G15_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1]+15, window.current_color[2]], [255,255,255],  0, 0.35, 0, '+15', 128, [0, 255, 0], (512/2) - 115, (512/2));
+        G15_btn.action = 'green';
+        G15_btn.action_data = '15';
+        window.scene.add(G15_btn);
+        window.scene_objects.push(G15_btn);
+    }
+
+    if(window.current_color[1]+1 <= 255){
+        // G+1
+        var G1_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1]+1, window.current_color[2]], [255,255,255],  0, 0, 0, '+1', 128, [0, 255, 0], (512/2) - 115, (512/2));
+        G1_btn.action = 'green';
+        G1_btn.action_data = '1';
+        window.scene.add(G1_btn);
+        window.scene_objects.push(G1_btn);
+    }
+
+    if(window.current_color[2]+30 <= 255){
+        // B+30
+        var B30_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1], window.current_color[2]+30], [255,255,255],  0.35, 0.70, 0, '+30', 128, [0, 0, 255], (512/2) - 115, (512/2));
+        B30_btn.action = 'blue';
+        B30_btn.action_data = '30';
+        window.scene.add(B30_btn);
+        window.scene_objects.push(B30_btn);
+    }
+    
+    if(window.current_color[2]+15 <= 255){
+        // B+15
+        var B15_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1], window.current_color[2]+15], [255,255,255],  0.35, 0.35, 0, '+15', 128, [0, 0, 255], (512/2) - 115, (512/2));
+        B15_btn.action = 'blue';
+        B15_btn.action_data = '15';
+        window.scene.add(B15_btn);
+        window.scene_objects.push(B15_btn);
+    }
+
+    if(window.current_color[2]+1 <= 255){
+        // B+1
+        var B1_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1], window.current_color[2]+1], [255,255,255],  0.35, 0, 0, '+1', 128, [0, 0, 255], (512/2) - 115, (512/2));
+        B1_btn.action = 'blue';
+        B1_btn.action_data = '1';
+        window.scene.add(B1_btn);
+        window.scene_objects.push(B1_btn);
+    }
+    
+    ////////////////////
+    //  lighter
+    //  darker
+    ////////////////////
+    
+    if(window.current_color[0]-1 >= 0){
+        // R-1
+        var R_1_btn = CubeButton(0.25, [window.current_color[0]-1,window.current_color[1], window.current_color[2]], [0,0,0], -0.35, -0.35, 0, '-1', 128, [255, 0, 0], (512/2) - 115, (512/2));
+        R_1_btn.action = 'red';
+        R_1_btn.action_data = '-1';
+        window.scene.add(R_1_btn);
+        window.scene_objects.push(R_1_btn);
+    }
+    
+    if(window.current_color[0]-15 >= 0){
+        // R-15
+        var R_15_btn = CubeButton(0.25, [window.current_color[0]-15,window.current_color[1], window.current_color[2]], [0,0,0], -0.35, -0.70, 0, '-15', 128, [255, 0, 0], (512/2) - 115, (512/2));
+        R_15_btn.action = 'red';
+        R_15_btn.action_data = '-15';
+        window.scene.add(R_15_btn);
+        window.scene_objects.push(R_15_btn);
+    }
+
+    if(window.current_color[0]-30 >= 0){
+        // R-30
+        var R_30_btn = CubeButton(0.25, [window.current_color[0]-30,window.current_color[1], window.current_color[2]], [0,0,0], -0.35, -1.05, 0, '-30', 128, [255, 0, 0], (512/2) - 115, (512/2));
+        R_30_btn.action = 'red';
+        R_30_btn.action_data = '-30';
+        window.scene.add(R_30_btn);
+        window.scene_objects.push(R_30_btn);
+    }
+    
+    if(window.current_color[1]-1 >= 0){
+        // G-1
+        var G_1_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1]-1, window.current_color[2]], [0,0,0],  0,  -0.35, 0, '-1', 128, [0,255,0], (512/2) - 115, (512/2));
+        G_1_btn.action = 'green';
+        G_1_btn.action_data = '-1';
+        window.scene.add(G_1_btn);
+        window.scene_objects.push(G_1_btn);
+    }
+    
+    if(window.current_color[1]-15 >= 0){
+        // G-15
+        var G_15_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1]-15, window.current_color[2]], [0,0,0],  0, -0.70, 0, '-15', 128, [0,255,0], (512/2) - 115, (512/2));
+        G_15_btn.action = 'green';
+        G_15_btn.action_data = '-15';
+        window.scene.add(G_15_btn);
+        window.scene_objects.push(G_15_btn);
+    }
+
+    if(window.current_color[1]-30 >= 0){
+        // G-30
+        var G_30_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1]-30, window.current_color[2]], [0,0,0],  0, -1.05, 0, '-30', 128, [0,255,0], (512/2) - 115, (512/2));
+        G_30_btn.action = 'green';
+        G_30_btn.action_data = '-30';
+        window.scene.add(G_30_btn);
+        window.scene_objects.push(G_30_btn);
+    }
+
+    if(window.current_color[2]-1 >= 0){
+        // B-1
+        var B_1_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1], window.current_color[2]-1], [0,0,0],  0.35,  -0.35, 0, '-1', 128, [0,0,255], (512/2) - 115, (512/2));
+        B_1_btn.action = 'blue';
+        B_1_btn.action_data = '-1';
+        window.scene.add(B_1_btn);
+        window.scene_objects.push(B_1_btn);
+    }
+    
+    if(window.current_color[2]-15 >= 0){
+        // B-15
+        var B_15_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1], window.current_color[2]-15], [0,0,0],  0.35, -0.70, 0, '-15', 128, [0,0,255], (512/2) - 115, (512/2));
+        B_15_btn.action = 'blue';
+        B_15_btn.action_data = '-15';
+        window.scene.add(B_15_btn);
+        window.scene_objects.push(B_15_btn);
+    }
+
+    if(window.current_color[2]-30 >= 0){
+        // B-30
+        var B_30_btn = CubeButton(0.25, [window.current_color[0],window.current_color[1], window.current_color[2]-30], [0,0,0],  0.35, -1.05, 0, '-30', 128, [0,0,255], (512/2) - 115, (512/2));
+        B_30_btn.action = 'blue';
+        B_30_btn.action_data = '-30';
+        window.scene.add(B_30_btn);
+        window.scene_objects.push(B_30_btn);
+    }
+
+}// / HueGoingMyWay()
 
 ///////////////////////////////////
 // / Scene Functions             //
@@ -227,20 +446,37 @@ export function Animate(){
            segment.rotation.y += 0.0075;
         });
     }
-	if(window.current_scene === 2){ // Color Conformation 
-	
-	    // For all the cube buttons
-        window.scene_objects.forEach(function(scene_element){
-			
-			if(scene_element.type === 'button'){
-			   // Rotate around the X & Z axis each frame
-
-			   scene_element.rotation.x += 0.01;
-			   scene_element.rotation.z += 0.01;
-			}
-        });
-	}
+    else if(window.current_scene === 2){ // Color Conformation 
     
+        // For all the cube buttons
+        window.scene_objects.forEach(function(scene_element){
+            
+            if(scene_element.type === 'button'){
+               // Rotate around the X & Z axis each frame
+
+               scene_element.rotation.x += 0.01;
+               scene_element.rotation.z += 0.01;
+            }
+        });
+    }
+    else if(window.current_scene === 3){ // Hue Going My Way
+    
+        // For all the cube buttons
+        window.scene_objects.forEach(function(scene_element){
+            
+            if(scene_element.type === 'button'){
+               // Rotate around the X & Z axis each frame
+               
+               if(scene_element.action_data > 0){
+                   scene_element.rotation.x -= 0.01;
+               }
+               else if(scene_element.action_data < 0){
+                   scene_element.rotation.x += 0.01;
+               }
+            }
+        });
+    }
+        
     // Render the WebGL image
     window.renderer.render(window.scene, window.camera);
     
@@ -257,7 +493,7 @@ export function Animate(){
 
 // Change the scene to a different selection
 export function SceneChange(scene_number, title, instructions){
-	window.scene_objects = [];
+    window.scene_objects = [];
     window.current_scene = scene_number;
     document.title = title;
     document.getElementById('instructions').innerHTML = instructions;
@@ -272,10 +508,11 @@ export function SceneChange(scene_number, title, instructions){
     else if(scene_number === 2){
         ColorConformation();
     }
-	/*
-	else if(scene_number === 3){
-        Scene3Function();
+    
+    else if(scene_number === 3){
+        HueGoingMyWay();
     }
+    /*
     else if(scene_number === 4){
         Scene4Function();
     }
@@ -333,8 +570,7 @@ function MouseClick(event){
     var collisions = Raycast(); // Are we over anything?
     
     if (collisions.length > 0){
-        console.log(window.scene_number);
-        
+              
         // The first object the ray collided with is our selection
         var selection = collisions[0].object;
         
@@ -345,11 +581,10 @@ function MouseClick(event){
         else if(window.current_scene === 2){
             ColorConformationMouseClickHandeler(selection);
         }
-		/*
+        
         else if(window.current_scene === 3){
-            SceneThreeMouseClickHandeler();
+            HueGoingMyWayMouseClickHandeler(selection);
         }
-        */
         
     }
 } // / MouseClick()
@@ -364,20 +599,10 @@ function CarouselOfColorMouseClickHandeler(selection){
         window.base_color = selection.color;
         //selection.color & window.base_color === the key to the selected color
         
-        SceneChange(2, 'Chromatron: Color Conformation', 'Continue with this color?')
+        SceneChange(2, 'Chromatron: Color Conformation', 'Continue with this color?');
         
     } // / clicked the carousel
-    else if(selection.type === 'button'){ // clicked on a button
-        
-        // Go Back button clicked
-        SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color');
-        
-        
-        // Go Forward button clicked
-        //SceneChange(3, 'Chromatron: Hue Going My Way?', '');
-        
-        
-    } // / clicked on a button
+    
 } // / CarouselOfColorMouseClickHandeler()
 
 
@@ -385,21 +610,51 @@ function CarouselOfColorMouseClickHandeler(selection){
 function ColorConformationMouseClickHandeler(selection){
     
     if(selection.type === 'button'){ // clicked on a button
-        
-		
-		// if go back
-			// Go Back button clicked
-			SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color');
-			
-        
-		// if continue
-			// Go Forward button clicked
-			//SceneChange(3, 'Chromatron: Hue Going My Way?', '');
-        
-        
+
+        // Go Back button clicked
+        if(selection.action == 'change scene' && selection.action_data == 1){
+            SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color');
+        }
+        // Go Forward button clicked
+        else if(selection.action == 'change scene' && selection.action_data == 3){
+            SceneChange(3, 'Chromatron: Hue Going My Way?', 'Adjust the color until it\'s perfect, click the swatch when you are done.');
+        }
+
     } // / clicked on a button
 } // / ColorConformationMouseClickHandeler()
 
+
+function HueGoingMyWayMouseClickHandeler(selection){
+    
+    if(selection.type === 'button'){ // clicked on a button
+
+        // RGB color adjust button clicked
+        if(selection.action == 'red' || selection.action == 'green' || selection.action == 'blue'){
+            
+            if(selection.action == 'red'){
+                var color_channel = 0;
+            }
+            else if(selection.action == 'green'){
+                var color_channel = 1;
+            }
+            else if(selection.action == 'blue'){
+                var color_channel = 2;
+            }
+                        
+            window.current_color[color_channel] += Number(selection.action_data);
+            SceneChange(3, 'Chromatron: Hue Going My Way?', 'Adjust the color until it\'s perfect, click the swatch when you are done.');
+        }
+
+    } // / clicked on a button
+    else if(selection.type === 'swatch button'){ // clicked the swatch button
+
+        if(selection.action == 'change scene' && selection.action_data == 1){
+            SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color');
+        }
+        // Scene 4 Chrom
+        //SceneChange(4, 'Chromatron: Chro-my-goodness!!', '');
+    }
+} // / HueGoingMyWayMouseClickHandeler()
 
 
 
@@ -443,6 +698,7 @@ function Raycast(){
 }
 
 
+
 // Add new color cone segment to the scene
 function NewConeSegment(radius, 
                         height, 
@@ -478,11 +734,10 @@ function NewConeSegment(radius,
 
 
 
-
 // Generate and return a canvas with a 2 point linear gradient between start and stop 
 function GenerateGradientTexture(start, stop){
     var size = 512;
-	
+    
     // Create a canvas to paint on
     var canvas = document.createElement('canvas');
     canvas.width = size;
@@ -506,11 +761,10 @@ function GenerateGradientTexture(start, stop){
 
 
 
-
 function Text(parent_obj, text_string, color, size, x, y, z, rot_x = 0, rot_y = 0, rot_z = 0){
 
     window.font_loader.load('./assets/js/Pacifico_Regular.js', function(font){
-        var text_material = new THREE.MeshBasicMaterial({color: color});
+        var text_material = new THREE.MeshBasicMaterial({color: RGBColorToHex(color)});
         var text_geometry = new THREE.TextGeometry(text_string, {
             font: font,
             size: size,
@@ -524,45 +778,78 @@ function Text(parent_obj, text_string, color, size, x, y, z, rot_x = 0, rot_y = 
         mesh.position.x = x;
         mesh.position.y = y;
         mesh.position.z = z;
-		
-		mesh.rotation.x += rot_x;
-		mesh.rotation.y += rot_y;
-		mesh.rotation.z += rot_z;
+        
+        mesh.rotation.x += rot_x;
+        mesh.rotation.y += rot_y;
+        mesh.rotation.z += rot_z;
 
         parent_obj.add(mesh);
     });
 } // / Text()
 
 
+function TextAsTexture(texture_color_start, texture_color_end, text_value, text_size, text_color, text_x, text_y){
 
-function CubeButton(button_size, button_color, x, y, z, text_value, text_size, text_color){
-	
-	var btn_geometry = new THREE.BoxGeometry(button_size, button_size, button_size);
-	
-	var btn_texture = new THREE.Texture(GenerateGradientTexture(button_color, [0,0,0]));
-	btn_texture.needsUpdate = true;
-	
-	var btn_material = new THREE.MeshBasicMaterial({color: button_color,
-	                                                map: btn_texture});
-	
-	var btn = new THREE.Mesh(btn_geometry, btn_material);
-	btn.type = 'button';
-	
-	btn.position.x = x;
+    // convert [r,g,b] to #rrggbb
+    if(Array.isArray(text_color)){
+        
+        var hex_string = '#';
+        text_color.forEach(function(color){
+           var hex = Number(color).toString(16); 
+           if (hex.length < 2) { 
+               hex = "0" + hex; 
+            }
+           hex_string = hex_string + hex;
+        });
+        
+        text_color = hex_string;
+    }
+    
+    var canvas = GenerateGradientTexture(texture_color_start, texture_color_end);
+    var context = canvas.getContext('2d');
+    context.font = text_size.toString() + 'px Pacifico';
+    context.fillStyle = text_color;
+    context.textBaseline = 'middle';
+    context.fillText(text_value, text_x, text_y);
+
+    return canvas;
+
+} // / TextAsTexture()
+
+
+function CubeButton(button_size, button_color_start, button_color_end, x, y, z, text_value, text_size, text_color, text_x = (512/2), text_y = (512/2), text_3D = false){
+
+    var btn_geometry = new THREE.BoxGeometry(button_size, button_size, button_size);
+    
+    if(text_3D === true){
+        var btn_texture = new THREE.Texture(GenerateGradientTexture(button_color_start, button_color_end));
+    }
+     else{
+        var btn_texture = new THREE.Texture(TextAsTexture(button_color_start, button_color_end, text_value, text_size, text_color, text_x, text_y));
+    }
+    
+    btn_texture.needsUpdate = true;
+    var btn_material = new THREE.MeshBasicMaterial({color: button_color_start,
+                                                        map: btn_texture});
+        
+    var btn = new THREE.Mesh(btn_geometry, btn_material);
+
+    if(text_3D === true){
+        // Add text to button faces
+        Text(btn, text_value, text_color, text_size, 0, 0, button_size/2);
+        Text(btn, text_value, text_color, text_size, 0, 0, button_size/2 * (1 * -1), 0, 3.15, 0);
+        Text(btn, text_value, text_color, text_size, 0, button_size/2, 0, -89.5, 0, 0);
+        Text(btn, text_value, text_color, text_size, 0,  button_size/2 * (1 * -1), 0, 89.5, 0);
+        Text(btn, text_value, text_color, text_size, button_size/2, 0, 0, 0, 89.5, 0);
+        Text(btn, text_value, text_color, text_size, button_size/2 * (1 * -1), 0, 0, 0, -89.5, 0);
+    }
+    
+    btn.type = 'button';
+    btn.position.x = x;
     btn.position.y = y;
     btn.position.z = z;
-	
-	
-	// Add text to button faces
-	Text(btn, text_value, text_color, text_size, 0, 0, button_size/2);
-	Text(btn, text_value, text_color, text_size, 0, 0, button_size/2 * (1 * -1), 0, 3.15, 0);
-	Text(btn, text_value, text_color, text_size, 0, button_size/2, 0, -89.5, 0, 0);
-	Text(btn, text_value, text_color, text_size, 0,  button_size/2 * (1 * -1), 0, 89.5, 0);
-	Text(btn, text_value, text_color, text_size, button_size/2, 0, 0, 0, 89.5, 0);
-	Text(btn, text_value, text_color, text_size, button_size/2 * (1 * -1), 0, 0, 0, -89.5, 0);
-	
-	
-	return btn;
+    
+    return btn;
 }
 
 ///////////////////////////////////
