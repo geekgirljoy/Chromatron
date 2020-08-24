@@ -194,6 +194,7 @@ function ColorConformation(){
     window.scene.add(swatch);
     window.scene_objects.push(swatch);
     
+    
     // ask to proceed
     var continue_btn = CubeButton(0.45, colors['harlequin'], [0, 0, 0],  0, 0.4, 0, 'Continue >', 52, [255, 255, 255], (512/2) - 115, (512/2));
     continue_btn.action = 'change scene';
@@ -251,7 +252,7 @@ function HueGoingMyWay(){
 
     swatch.type = 'swatch button';
     swatch.action = 'change scene';
-    swatch.action_data = 1;
+    swatch.action_data = 4;
     
     window.scene.add(swatch);
     window.scene_objects.push(swatch);
@@ -426,6 +427,22 @@ function HueGoingMyWay(){
 
 }// / HueGoingMyWay()
 
+
+
+//////////////////////////////////////////
+//                                      //
+//    Scene 4 : Chro-my-goodness!!      //
+//                                      //
+//////////////////////////////////////////
+function ChroMyGoodness(){
+    
+    // Update the Elements
+    
+    // Show the overlay "scene"
+    document.getElementById("ChroMyGoodness").style.display = "block";
+}
+
+
 ///////////////////////////////////
 // / Scene Functions             //
 ///////////////////////////////////
@@ -508,19 +525,20 @@ export function SceneChange(scene_number, title, instructions){
     else if(scene_number === 2){
         ColorConformation();
     }
-    
     else if(scene_number === 3){
         HueGoingMyWay();
     }
-    /*
     else if(scene_number === 4){
-        Scene4Function();
+        ChroMyGoodness();
     }
-    
-    */
+ 
 } // / SceneChange()
 
 function ClearScene(){
+    
+    // Okay look this isn't the "best" way to do this but... well, it works and this is just a prototype :-P
+    document.getElementById("ChroMyGoodness").style.display = "none";
+    
     while(window.scene.children.length > 0){         
         window.scene.remove(window.scene.children[0]);     
     }    
@@ -546,8 +564,17 @@ function MouseMove(event){
     var collisions = Raycast(); // Are we over anything?
     
     if (collisions.length > 0){
+        
         // The first object the ray collided with is our selection
         var selection = collisions[0].object;
+        
+        // Show a pointer when appropriate  
+        if(selection.type === 'button' 
+           || selection.type === 'carousel' 
+           || selection.type === 'swatch button'){
+            document.body.style.cursor = 'pointer';
+        }
+                
         window.highlighted_objects = []; // Purge previous selection
         window.highlighted_objects.push(selection); // Add new selection
         
@@ -555,6 +582,9 @@ function MouseMove(event){
         outline_pass.selectedObjects = window.highlighted_objects;
     }
     else{
+        
+        document.body.style.cursor = 'default';
+        
         window.highlighted_objects = []; // Purge previous selection
         outline_pass.selectedObjects = window.highlighted_objects;
     }
@@ -577,15 +607,15 @@ function MouseClick(event){
         if(window.current_scene === 1){
             CarouselOfColorMouseClickHandeler(selection);
         }
-        
         else if(window.current_scene === 2){
             ColorConformationMouseClickHandeler(selection);
         }
-        
         else if(window.current_scene === 3){
             HueGoingMyWayMouseClickHandeler(selection);
         }
-        
+        else if(window.current_scene === 4){
+            // No Raycasting for Scene 4 - Chro-my-goodness
+        }
     }
 } // / MouseClick()
 
@@ -648,14 +678,26 @@ function HueGoingMyWayMouseClickHandeler(selection){
     } // / clicked on a button
     else if(selection.type === 'swatch button'){ // clicked the swatch button
 
-        if(selection.action == 'change scene' && selection.action_data == 1){
-            SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color');
-        }
-        // Scene 4 Chrom
-        //SceneChange(4, 'Chromatron: Chro-my-goodness!!', '');
+        if(selection.action == 'change scene' && selection.action_data == 4){
+            SceneChange(4, 'Chromatron: Chro-my-goodness!!', 'Chro-my-goodness that\'s a great color!');
+        };
     }
 } // / HueGoingMyWayMouseClickHandeler()
 
+
+// ChroMyGoodness Buttons / "Mouse Functions"
+export function CopyToClipboard() {
+    var Clipboard = document.createElement('textarea');
+    Clipboard.value = 'Hoopajoop!!! This feature flew the coop! Try again later. ;-)';
+    Clipboard.setAttribute('readonly', '');  
+    document.body.appendChild(Clipboard);
+    Clipboard.select();
+    Clipboard.setSelectionRange(0, 99999); // mobile
+    document.execCommand('copy');
+    document.body.removeChild(Clipboard);
+    alert('Hoopajoop!!! This feature flew the coop! Try again later. ;-)');
+}
+// / ChroMyGoodness Buttons / "Mouse Functions"
 
 
 
@@ -839,7 +881,7 @@ function CubeButton(button_size, button_color_start, button_color_end, x, y, z, 
         Text(btn, text_value, text_color, text_size, 0, 0, button_size/2);
         Text(btn, text_value, text_color, text_size, 0, 0, button_size/2 * (1 * -1), 0, 3.15, 0);
         Text(btn, text_value, text_color, text_size, 0, button_size/2, 0, -89.5, 0, 0);
-        Text(btn, text_value, text_color, text_size, 0,  button_size/2 * (1 * -1), 0, 89.5, 0);
+        Text(btn, text_value, text_color, text_size, 0, button_size/2 * (1 * -1), 0, 89.5, 0);
         Text(btn, text_value, text_color, text_size, button_size/2, 0, 0, 0, 89.5, 0);
         Text(btn, text_value, text_color, text_size, button_size/2 * (1 * -1), 0, 0, 0, -89.5, 0);
     }

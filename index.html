@@ -8,27 +8,47 @@
 
     </head>
     <body>
-	
-	    <center>
-    
+        <center>
+
             <h1>Chromatron</h1>
             <div id="instructions"></div>
-             
+
             <script type="module" src="./assets/js/chromatron.js"></script>
             <script type="module">
 
-                // Import SceneChange & Animate
+                // Import CopyToClipboard, SceneChange & Animate
+                import {CopyToClipboard} from './assets/js/chromatron.js';
                 import {SceneChange} from './assets/js/chromatron.js';
                 import {Animate} from './assets/js/chromatron.js';
 
                 // Scene 1 - The Carousel of Color
                 SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color');
-                
+
                 Animate(); // Start Animation
-      
+
+                // Expose exported functions to the page
+                window.SceneChange = function(scene, title, instructions){
+                  SceneChange(scene, title, instructions);
+                }
+                window.CopyToClipboard = function(){  
+                  CopyToClipboard();
+                }
+
             </script>
         </center>
+
+        <div id="ChroMyGoodness"> 
+
+            <button id='gobackButtonChromygoodness' class='button' onclick="SceneChange(3, 'Chromatron: Hue Going My Way?', 'Adjust the color until it\'s perfect, click the swatch when you are done.')">&#x3c; Go Back</button>
+
+            <button id='startOverButton' class='button' onclick="SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color')">Start Over &#x3e;</button>
+
+            <center>
+                <h1>Your Favorite Color</h1>
+                <p id='instructions'>Coming Soon.</p>
+                <button id='copyToClipboardButton' class='button' onclick="CopyToClipboard()">Copy to Clipboard</button>
+            </center>
+        </div>
+
     </body>
 </html>
-
-
