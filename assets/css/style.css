@@ -77,7 +77,31 @@ h1{
     font-weight: bold;
     cursor: pointer;
 }
-
-.button:hover {
-    box-shadow: 0 0 3px 3px white;
+@keyframes button {
+  0%   { box-shadow: 0 0 3px 3px white; }
+  50%  { box-shadow: 0 0 3px 3px dimgray; }
+  100% { box-shadow: 0 0 3px 3px white; }
 }
+@-o-keyframes button{
+  0%   { box-shadow: 0 0 3px 3px white; }
+  50%  { box-shadow: 0 0 3px 3px dimgray; }
+  100% { box-shadow: 0 0 3px 3px white; }
+}
+@-moz-keyframes button{
+  0%   { box-shadow: 0 0 3px 3px white; }
+  50%  { box-shadow: 0 0 3px 3px dimgray; }
+  100% { box-shadow: 0 0 3px 3px white; }
+}
+@-webkit-keyframes button{
+  0%   { box-shadow: 0 0 3px 3px white; }
+  50%  { box-shadow: 0 0 3px 3px dimgray; }
+  100% { box-shadow: 0 0 3px 3px white; }
+}
+.button:hover {
+   -webkit-animation: button 2s infinite;
+   -moz-animation: button 2s infinite;
+   -o-animation: button 2s infinite;
+    animation: button 2s infinite;
+}
+
+
