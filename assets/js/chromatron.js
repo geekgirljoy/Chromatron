@@ -64,7 +64,7 @@ window.font_loader = new THREE.FontLoader();
 window.highlighted_objects = [];
 window.scene_objects = [];
 
-    
+
 
 var colors ={
     // The world is a carousel of color,
@@ -119,7 +119,7 @@ var colors ={
     lemon: [223, 255,0]
 };
 
-
+window.ClipboardText = '';
 
 
 ///////////////////////////////////
@@ -436,8 +436,200 @@ function HueGoingMyWay(){
 //////////////////////////////////////////
 function ChroMyGoodness(){
     
-    // Update the Elements
+    var width = 300;
+    var height = 950;
+    var margin = 10;
+    var row_size = 32;
+
+    var canvas = document.getElementById("myFavoriteColor");
+    var context = canvas.getContext("2d");
     
+    // Make sure the canvas is large enough
+    canvas.height = height;
+    canvas.width = width;
+    
+    
+    // Calculate RGB, HSL & Hex for the favorite color
+    var fav_color_rgb = 'rgb('+window.current_color[0]+', '+window.current_color[1]+', '+window.current_color[2]+')';
+    var fav_color_hsl = RGBToHSL([window.current_color[0],window.current_color[1], window.current_color[2]]);
+    var fav_color_hex = RGBColorToHexString([window.current_color[0],window.current_color[1], window.current_color[2]]);
+    var degrees =  360 / 12;
+    
+    // Calculate Analogous colors
+    var analogous_colors = [];
+     analogous_colors[0] = fav_color_hsl.slice();
+    var h = RotateHue(fav_color_hsl[0], -degrees);
+    analogous_colors[0][0] = h;
+    analogous_colors[0] = RGBColorToHexString(HSLtoRGB(analogous_colors[0]));
+    analogous_colors[1] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], degrees);
+    analogous_colors[1][0] = h;
+    analogous_colors[1] = RGBColorToHexString(HSLtoRGB(analogous_colors[1]));
+    
+    // Calculate complementary color
+    var complementary_color_hex = RGBColorToHexString(ComplementaryRGBColor([window.current_color[0],window.current_color[1], window.current_color[2]]));
+
+    // Calculate split complementary colors
+    var split_complementary_colors = [];
+     split_complementary_colors[0] = fav_color_hex;
+    split_complementary_colors[1] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], -(degrees*5));
+    split_complementary_colors[1][0] = h;
+    split_complementary_colors[1] = RGBColorToHexString(HSLtoRGB(split_complementary_colors[1]));
+    split_complementary_colors[2] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], (degrees*5));
+    split_complementary_colors[2][0] = h;
+    split_complementary_colors[2] = RGBColorToHexString(HSLtoRGB(split_complementary_colors[2]));
+
+    // Calculate Triadic color
+    var triadic_colors = [];
+     triadic_colors[0] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], -(degrees*4));
+    triadic_colors[0][0] = h;
+    triadic_colors[0] = RGBColorToHexString(HSLtoRGB(triadic_colors[0]));
+    triadic_colors[1] = fav_color_hex;    
+    triadic_colors[2] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], (degrees*4));
+    triadic_colors[2][0] = h;
+    triadic_colors[2] = RGBColorToHexString(HSLtoRGB(triadic_colors[2]));
+
+    // Calculate Tetradic color
+    var tetradic_colors = [];
+    tetradic_colors[0] = fav_color_hex;    
+     tetradic_colors[1] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], (degrees*2));
+    tetradic_colors[1][0] = h;
+    tetradic_colors[1] = RGBColorToHexString(HSLtoRGB(tetradic_colors[1]));
+    tetradic_colors[2] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], (degrees*6));
+    tetradic_colors[2][0] = h;
+    tetradic_colors[2] = RGBColorToHexString(HSLtoRGB(tetradic_colors[2]));
+    tetradic_colors[3] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], -(degrees*4));
+    tetradic_colors[3][0] = h;
+    tetradic_colors[3] = RGBColorToHexString(HSLtoRGB(tetradic_colors[3]));
+
+    // Calc above
+    
+    //Store colors as text string for copy to clipboard.
+    window.ClipboardText = 'Your Favorite Color:\n'
+    window.ClipboardText += 'RGB: ' + window.current_color[0]+', '+window.current_color[1]+', '+window.current_color[2] + '\n';
+    window.ClipboardText += 'HSL: ' + fav_color_hsl[0].toFixed(3)+', '+(fav_color_hsl[1] * 100).toFixed(1) + '%'+', '+(fav_color_hsl[2] * 100).toFixed(1) + '%\n';
+    window.ClipboardText += 'HEX: ' + fav_color_hex + '\n';
+    window.ClipboardText += 'Analogous Colors: ' + analogous_colors[0] + ', ' + analogous_colors[1] + '\n';
+    window.ClipboardText += 'Split Complementary Colors: ' + split_complementary_colors[0] + ', ' + split_complementary_colors[1] + ', ' + split_complementary_colors[2] + '\n';
+    window.ClipboardText += 'Triadic Colors: ' + triadic_colors[0] + ', ' + triadic_colors[1] + ', ' + triadic_colors[2] + '\n';
+    window.ClipboardText += 'Tetradic Colors: ' + tetradic_colors[0] + ', ' + tetradic_colors[1] + ', ' + tetradic_colors[2] + '\n';
+    window.ClipboardText += '\n\nChromatron: https://geekgirljoy.github.io/Chromatron/\n';
+    window.ClipboardText += 'Created By: https://geekgirljoy.wordpress.com/';
+    
+    // Draw below
+    
+    // Create background
+    context.fillStyle = '#000000';
+    context.fillRect(0, 0, 300, height);
+        
+    // Create "Your Favorite Color" swatch
+    context.fillStyle = fav_color_rgb;
+    context.fillRect(margin,margin,width - (margin * 2), 50);
+
+    // Create Labels
+    context.fillStyle = '#ffffff';
+    context.font = "16px Arial";
+    context.fillText("RGB", margin, (row_size * 3));
+    context.fillText('('+window.current_color[0]+', '+window.current_color[1]+', '+window.current_color[2]+')', margin+120, (row_size * 3));
+    context.fillText("HSL", margin, (row_size * 4));
+    context.fillText('('+fav_color_hsl[0].toFixed(3)+', '+(fav_color_hsl[1] * 100).toFixed(1) + '%'+', '+(fav_color_hsl[2] * 100).toFixed(1) + '%)', margin+80, (row_size * 4));
+    context.fillText("HEX", margin, (row_size * 5));
+    context.fillText(fav_color_hex, margin+140, (row_size * 5));
+    context.fillText("Gradients", 115, (row_size * 6));  
+    context.fillText("Gradient to White", margin, (row_size * 7));
+    context.fillText("Gradient to Black", margin, (row_size * 8));
+    context.fillText("Analogous Colors", 85, (row_size * 9));
+    context.fillText(analogous_colors[0], margin, (row_size * 10));
+    context.fillText(analogous_colors[1], margin, (row_size * 11));
+    context.fillText("Complementary Color", 65, (row_size * 12));
+    context.fillText(complementary_color_hex, margin, (row_size * 13));
+    context.fillText("Split Complementary Colors", 45, (row_size * 14));
+    context.fillText(split_complementary_colors[0], margin, (row_size * 15));
+    context.fillText(split_complementary_colors[1], margin, (row_size * 16));
+    context.fillText(split_complementary_colors[2], margin, (row_size * 17));
+    context.fillText("Triadic Colors", 95, (row_size * 18));
+    context.fillText(triadic_colors[0], margin, (row_size * 19));
+    context.fillText(triadic_colors[1], margin, (row_size * 20));
+    context.fillText(triadic_colors[2], margin, (row_size * 21));
+    context.fillText("Tetradic Colors", 90, (row_size * 22));
+    context.fillText(tetradic_colors[0], margin, (row_size * 23));
+    context.fillText(tetradic_colors[1], margin, (row_size * 24));
+    context.fillText(tetradic_colors[2], margin, (row_size * 25));
+    context.fillText(tetradic_colors[3], margin, (row_size * 26));
+    context.fillText("https://geekgirljoy.github.io/Chromatron/", margin, (row_size * 28));
+    context.fillText("https://geekgirljoy.wordpress.com/", margin+20, (row_size * 29));
+
+
+    // Create Swatches
+    // Gradient fav -> white swatch
+    var grd = context.createLinearGradient(150,(row_size * 7) - 20, 300,width - (margin * 2));
+    grd.addColorStop(0, fav_color_rgb);
+    grd.addColorStop(1,"white");
+    context.fillStyle = grd;
+    context.fillRect(150,(row_size * 7) - 20,140,30);
+      
+    // Gradient fav -> black swatch
+    grd = context.createLinearGradient(150,(row_size * 8) - 20, 300,width - (margin * 2));
+    grd.addColorStop(0, fav_color_rgb);
+    grd.addColorStop(1,"black");
+    context.fillStyle = grd;
+    context.fillRect(150,(row_size * 8) - 20,140,30);
+  
+    // Analogous colors swatches
+      context.fillStyle = analogous_colors[0];
+    context.fillRect(150,(row_size * 10)-20,140,30);
+    context.fillStyle = analogous_colors[1];
+    context.fillRect(150,(row_size * 11)-20,140,30);
+    
+    // Complementary color swatch
+      context.fillStyle = complementary_color_hex;
+    context.fillRect(150,(row_size * 13)-20,140,30);
+        
+    // Split complementary colors swatches
+      context.fillStyle = split_complementary_colors[0];
+    context.fillRect(150,(row_size * 15)-20,140,30);
+    context.fillStyle = split_complementary_colors[1];
+    context.fillRect(150,(row_size * 16)-20,140,30);
+    context.fillStyle = split_complementary_colors[2];
+    context.fillRect(150,(row_size * 17)-20,140,30);        
+    
+    // Triadic colors swatches
+      context.fillStyle = triadic_colors[0];
+    context.fillRect(150,(row_size * 19)-20,140,30);
+    context.fillStyle = triadic_colors[1];
+    context.fillRect(150,(row_size * 20)-20,140,30);
+    context.fillStyle = triadic_colors[2];
+    context.fillRect(150,(row_size * 21)-20,140,30);
+    
+    // Tetradic colors swatches
+      context.fillStyle = tetradic_colors[0];
+    context.fillRect(150,(row_size * 23)-20,140,30);
+    context.fillStyle = tetradic_colors[1];
+    context.fillRect(150,(row_size * 24)-20,140,30);
+    context.fillStyle = tetradic_colors[2];
+    context.fillRect(150,(row_size * 25)-20,140,30);
+    context.fillStyle = tetradic_colors[3];
+    context.fillRect(150,(row_size * 26)-20,140,30);
+    
+    // Horizontal ruler
+    context.beginPath();
+    context.strokeStyle = '#ffffff';
+    context.moveTo(margin, (row_size * 27));
+    context.lineTo(width - margin, (row_size * 27));
+    context.stroke(); 
+
+    // Make sure the download button points to the canvas data
+    var download_link = document.getElementById('downloadImageButton');
+    download_link.setAttribute('download', 'MyFavoriteColor.png');
+    download_link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+
     // Show the overlay "scene"
     document.getElementById("ChroMyGoodness").style.display = "block";
 }
@@ -552,6 +744,9 @@ function ClearScene(){
 ///////////////////////////////////
 // Mouse Functions               //
 ///////////////////////////////////
+
+
+
 
 
 // When the Mouse moves
@@ -687,15 +882,17 @@ function HueGoingMyWayMouseClickHandeler(selection){
 
 // ChroMyGoodness Buttons / "Mouse Functions"
 export function CopyToClipboard() {
+    
     var Clipboard = document.createElement('textarea');
-    Clipboard.value = 'Hoopajoop!!! This feature flew the coop! Try again later. ;-)';
+    Clipboard.value = window.ClipboardText;
     Clipboard.setAttribute('readonly', '');  
     document.body.appendChild(Clipboard);
     Clipboard.select();
     Clipboard.setSelectionRange(0, 99999); // mobile
     document.execCommand('copy');
     document.body.removeChild(Clipboard);
-    alert('Hoopajoop!!! This feature flew the coop! Try again later. ;-)');
+    
+    alert('Copied!\n\n' + window.ClipboardText);
 }
 // / ChroMyGoodness Buttons / "Mouse Functions"
 
@@ -707,7 +904,7 @@ export function CopyToClipboard() {
 
 
 ///////////////////////////////////
-// Other Functions               //
+// Color Functions               //
 ///////////////////////////////////
 
 
@@ -718,7 +915,7 @@ function RGBColorToHex(rgb_array){
     rgb_array.forEach(function(color){
            
            var hex = Number(color).toString(16); 
-           if (hex.length < 2) { 
+           if (hex.length < 2){ 
                hex = "0" + hex; 
             }
            
@@ -728,6 +925,196 @@ function RGBColorToHex(rgb_array){
     return parseInt(hex_string, 16);
 } // / RGBColorToHex()
 
+function RGBColorToHexString(rgb_array) {
+
+   var hex_string = '';
+   
+   rgb_array.forEach(function(color){
+           
+           var hex = Number(color).toString(16); 
+           if (hex.length < 2){ 
+               hex = "0" + hex; 
+            }
+           
+           hex_string = hex_string + hex;
+    });
+
+    return "#" + hex_string;
+}
+
+
+
+
+// Complementary / Opposite
+// Based on the information available here:
+// https://en.wikipedia.org/wiki/Complementary_colors
+// Complementary colors are pairs of colors which, 
+// when combined or mixed, cancel each other out (lose hue) 
+// by producing a grayscale color like white or black.
+function ComplementaryRGBColor(rgb_array){
+    // white minus this color = Complementary / Opposite 
+    var color_r = 255 - rgb_array[0];
+    var color_g = 255 - rgb_array[1];
+    var color_b = 255 - rgb_array[2];
+
+    return [color_r, color_g, color_b];
+}
+//console.log(ComplementaryRGBColor([0,0,0])); // [255, 255, 255]
+
+
+
+
+// RGB Array [r,g,b] to HSL Array
+// Based on the information available here:
+// https://en.wikipedia.org/wiki/HSL_and_HSV
+function RGBToHSL(rgb_array){
+
+   var color = [];
+
+   // Convert the 0 - 255 values to a range of 0 - 1
+   color['red'] = rgb_array[0] / 255;
+   color['green'] = rgb_array[1] / 255;
+   color['blue'] = rgb_array[2] / 255;
+  
+   // Find the largest and smallest color values
+   color['max'] = Math.max.apply(Math,[color['red'], color['green'], color['blue']])
+   color['min'] = Math.min.apply(Math,[color['red'], color['green'], color['blue']])
+      
+
+   // Compute Chroma 
+   // The distance from the center of the HSL hexagonal color model to the color
+   // This is the magnitude of the vector pointing to the color. 
+   color['chroma'] = color['max'] - color['min'];
+     
+   // Compute Lightness 
+   //  The average of the brightest and darkest color channels
+   color['lightness'] = (color['max'] + color['min']) / 2;
+   
+  
+  // No Calculation Needed
+  if(color['chroma'] === 0){
+      color['hue'] = 0;
+      color['saturation'] = 0;
+  }
+  else{
+
+      // Calculate Saturation
+      if(color['lightness'] === 0 || color['lightness'] === 1){
+          color['saturation'] = 0;
+      }else{
+          color['saturation'] = color['chroma'] / (1 - Math.abs(2 * color['lightness'] - 1));
+      }
+
+
+      // Calculate Hue
+      // This is the angle of the vector pointing to the color. 
+      if(color['max'] === color['red']){
+          color['hue'] = (60 * ((color['green'] - color['blue']) / color['chroma']) + 0) % 360;
+          if(color['hue'] < 0){
+              color['hue'] += 360;
+          }
+        
+      }
+      else if(color['max'] === color['green']){
+          color['hue'] = (60 * ((color['blue'] - color['red']) / color['chroma']) + 120) % 360;
+      }
+    
+      else if(color['max'] === color['blue']){
+          color['hue'] = (60 * ((color['red'] - color['green']) / color['chroma']) + 240) % 360;
+      }
+  }
+
+
+  // Return RGB() -> HSL()
+  return [color['hue'], color['saturation'], color['lightness']]; 
+}
+//console.log(RGBToHSL([128,0,0])); // [0, 1, 0.25098039215686274];
+
+
+
+// HSL Array [h,s,l] to RGB Array
+// Based on the information available here:
+// https://en.wikipedia.org/wiki/HSL_and_HSV
+function HSLtoRGB(hsl_array){
+  
+    var color = [];
+    
+    // Compute Chroma, Hue prime and Chi
+    color['chroma'] = (1 - Math.abs((2 * hsl_array[2]) - 1)) * hsl_array[1];
+    color['hue_prime'] = (hsl_array[0] / 60);
+    color['chi'] = color['chroma'] * (1 - Math.abs( color['hue_prime'] % 2 - 1));    
+     
+    // Zero out the RGB Color Channels
+    color['red'] = 0;
+    color['green'] = 0;
+    color['blue'] = 0;
+    
+    // Determine where this color is in the HSL color space
+    // update RGB color channels accordingly
+    if(0 <= color['hue_prime'] && color['hue_prime'] <= 1){
+        color['red'] = color['chroma'];
+        color['green'] = color['chi'];
+    }
+    else if(1 <= color['hue_prime'] && color['hue_prime'] <= 2){
+        color['red'] = color['chi'];
+        color['green'] = color['chroma'];
+    }
+    else if(2 <= color['hue_prime'] && color['hue_prime'] <= 3){
+        color['green'] = color['chroma'];
+        color['blue'] = color['chi'];
+    }
+    else if(3 <= color['hue_prime'] && color['hue_prime'] <= 4){
+        color['green'] = color['chi'];
+        color['blue'] = color['chroma'];
+    }
+    else if(4 <= color['hue_prime'] && color['hue_prime'] <= 5){
+        color['red'] = color['chi'];
+        color['blue'] = color['chroma'];
+    }
+    else if(5 <= color['hue_prime'] && color['hue_prime'] <= 6){
+        color['red'] = color['chroma'];
+        color['blue'] = color['chi'];
+    }
+    
+    // Determine color lightness magnitude
+    color['magnitude'] = hsl_array[2] - (color['chroma'] / 2);
+    
+    // Adjust the lightness of the RGB channels
+    color['red'] = (color['red'] + color['magnitude']) * 255;
+    color['green'] = (color['green'] + color['magnitude']) * 255;
+    color['blue'] = (color['blue'] + color['magnitude']) * 255;
+    
+    // Return HSL() -> RGB()
+    return [Math.round(color['red']), Math.round(color['green']), Math.round(color['blue'])];
+}
+//console.log(HSLtoRGB([0, 1, 0.25098039215686])); // [128,0,0];
+
+
+
+function RotateHue(hue, degrees){
+        
+    hue += degrees;
+    
+     // rotate around
+    if(hue < 0){
+        hue += 360;
+    }
+    if(hue > 360){
+        hue -= 360;
+    }
+    return hue;
+}
+//console.log(RotateHue(0, -20)); // 340
+
+///////////////////////////////////
+// / Color Functions             //
+///////////////////////////////////
+
+
+
+///////////////////////////////////
+// Other Functions               //
+///////////////////////////////////
 
 
 // Scene Raycaster
@@ -893,6 +1280,7 @@ function CubeButton(button_size, button_color_start, button_color_end, x, y, z, 
     
     return btn;
 }
+
 
 ///////////////////////////////////
 // / Other Functions             //

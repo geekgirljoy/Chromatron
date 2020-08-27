@@ -28,16 +28,16 @@
 
                 // Expose exported functions to the page
                 window.SceneChange = function(scene, title, instructions){
-                  SceneChange(scene, title, instructions);
+                    SceneChange(scene, title, instructions);
                 }
-                window.CopyToClipboard = function(){  
-                  CopyToClipboard();
+                window.CopyToClipboard = function(){
+                    CopyToClipboard();
                 }
 
             </script>
         </center>
 
-        <div id="ChroMyGoodness"> 
+        <div id="ChroMyGoodness">
 
             <button id='gobackButtonChromygoodness' class='button' onclick="SceneChange(3, 'Chromatron: Hue Going My Way?', 'Adjust the color until it\'s perfect, click the swatch when you are done.')">&#x3c; Go Back</button>
 
@@ -45,8 +45,13 @@
 
             <center>
                 <h1>Your Favorite Color</h1>
-                <p id='instructions'>Coming Soon.</p>
-                <button id='copyToClipboardButton' class='button' onclick="CopyToClipboard()">Copy to Clipboard</button>
+                <p id='instructions2'>Chro-my-goodness that's a nice color!</p>
+
+                <canvas id="myFavoriteColor" style="border:1px solid #cccccc;"></canvas>
+
+                <a id="downloadImageButton"id='downloadImageButton' class='button'>Save Image</a>                
+                <button id='copyToClipboardButton' class='button' onclick="CopyToClipboard()">Copy as Text</button>
+
             </center>
         </div>
 
