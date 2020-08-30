@@ -127,6 +127,21 @@ window.ClipboardText = '';
 ///////////////////////////////////
 
 
+
+
+
+
+//////////////////////////////////////////
+//                                      //
+//    Scene 0 : Main Menu               //
+//                                      //
+//////////////////////////////////////////
+function MainMenu(){
+
+    // Show the overlay "scene"
+    document.getElementById("MainMenu").style.display = "block";
+}
+
 //////////////////////////////////////////
 //                                      //
 //    Scene 1 : Carousel of Color       //
@@ -632,6 +647,19 @@ function ChroMyGoodness(){
 
     // Show the overlay "scene"
     document.getElementById("ChroMyGoodness").style.display = "block";
+} // / ChroMyGoodness()
+
+
+
+//////////////////////////////////////////
+//                                      //
+//    Scene 5 : Select Images           //
+//                                      //
+//////////////////////////////////////////
+function SelectImages(){
+
+    // Show the overlay "scene"
+    document.getElementById("SelectImages").style.display = "block";
 }
 
 
@@ -711,6 +739,9 @@ export function SceneChange(scene_number, title, instructions){
     ClearScene();
     
     // What shall we play with now?
+    if(scene_number === 0){
+        MainMenu();
+    }
     if(scene_number === 1){
         CarouselOfColor();
     }
@@ -723,13 +754,18 @@ export function SceneChange(scene_number, title, instructions){
     else if(scene_number === 4){
         ChroMyGoodness();
     }
+    else if(scene_number === 5){
+        SelectImages();
+    }
  
 } // / SceneChange()
 
 function ClearScene(){
     
     // Okay look this isn't the "best" way to do this but... well, it works and this is just a prototype :-P
+    document.getElementById("MainMenu").style.display = "none";
     document.getElementById("ChroMyGoodness").style.display = "none";
+    document.getElementById("SelectImages").style.display = "none";
     
     while(window.scene.children.length > 0){         
         window.scene.remove(window.scene.children[0]);     
@@ -1284,4 +1320,33 @@ function CubeButton(button_size, button_color_start, button_color_end, x, y, z, 
 
 ///////////////////////////////////
 // / Other Functions             //
+///////////////////////////////////
+
+
+
+
+///////////////////////////////////
+//  Image Functions              //
+///////////////////////////////////
+
+export function LoadCompareImage(input, canvas){
+    canvas = document.getElementById(canvas);
+    var context = canvas.getContext('2d');
+    input = document.getElementById(input);
+
+    var file = new FileReader();
+    file.onload = function(event){
+        var image = new Image();
+        image.onload = function(){
+            canvas.width = image.width;
+            canvas.height = image.height;
+            context.drawImage(image,0,0);
+        }
+        image.src = event.target.result;
+    } 
+    file.readAsDataURL(input.files[0]);     
+}
+        
+///////////////////////////////////
+// / Image Functions             //
 ///////////////////////////////////
