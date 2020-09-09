@@ -235,44 +235,38 @@ function ColorConformation(){
 //                                      //
 //////////////////////////////////////////
 function HueGoingMyWay(){
-   // Display the color swatch button
-    var swatch_geometry = new THREE.BoxGeometry(1, 0.3, 0.01);
+    
+    var swatch = document.getElementById('continueSwatchButtonHueGoingMyWay');
     
     if(window.current_color == null){
         var c = colors[window.base_color];
         window.current_color = [c[0], c[1], c[2]];
     }
-    var swatch_texture = new THREE.Texture(GenerateGradientTexture(window.current_color, window.current_color));    
-    swatch_texture.needsUpdate = true;
     
-    // Use the gradient texture as the material for the cone segment
-    var swatch_material = new THREE.MeshBasicMaterial({color: [0,0,0],
-                                                map: swatch_texture});
-    var swatch = new THREE.Mesh(swatch_geometry, swatch_material);
-    swatch.position.y += 1.2;
+    var swatch_text_color = [255,255,255];
+    if((window.current_color[0] + window.current_color[1] + window.current_color[2]) > 382)
+    {
+        swatch_text_color = [0,0,0];
+    }
         
-    //var color_name = window.base_color.toString();
     var swatch_text = 'R:'+window.current_color[0].toString() + ' '
                     + 'G:'+window.current_color[1].toString() + ' '
                     + 'B:'+window.current_color[2].toString();
-    
-    if((window.current_color[0] + window.current_color[1] + window.current_color[2]) > 382)
-    {
-        var swatch_text_color = [0,0,0];
-    }
-    else{
-        var swatch_text_color = [255,255,255];
-    }
-    Text(swatch,swatch_text, swatch_text_color, 0.08, 0, 0, 0);
 
-    swatch.type = 'swatch button';
-    swatch.action = 'change scene';
-    swatch.action_data = 4;
-    
-    window.scene.add(swatch);
-    window.scene_objects.push(swatch);
+    // Update swatch text
+    swatch.innerHTML = swatch_text;
+   
+    // Update swatch text color
+    swatch.style.color = 'rgb(' + swatch_text_color[0] + ',' + swatch_text_color[1] + ',' + swatch_text_color[2] + ')';
 
+    // Update swatch color
+    swatch.style.backgroundColor = 'rgb(' + window.current_color[0] + ',' + window.current_color[1] + ',' + window.current_color[2] + ')';
+   
+   
+    // Display the color swatch button
+    swatch.style.display = 'inline';
 
+    // Add cube buttons
     if(window.current_color[0]+30 <= 255){
         // R+30
         var R30_btn = CubeButton(0.25, [window.current_color[0]+30,window.current_color[1], window.current_color[2]], [255,255,255], -0.35, 0.70, 0, '+30', 128, [255, 0, 0], (512/2) - 115, (512/2));
@@ -598,17 +592,17 @@ function ChroMyGoodness(){
     context.fillRect(150,(row_size * 8) - 20,140,30);
   
     // Analogous colors swatches
-      context.fillStyle = analogous_colors[0];
+    context.fillStyle = analogous_colors[0];
     context.fillRect(150,(row_size * 10)-20,140,30);
     context.fillStyle = analogous_colors[1];
     context.fillRect(150,(row_size * 11)-20,140,30);
     
     // Complementary color swatch
-      context.fillStyle = complementary_color_hex;
+    context.fillStyle = complementary_color_hex;
     context.fillRect(150,(row_size * 13)-20,140,30);
         
     // Split complementary colors swatches
-      context.fillStyle = split_complementary_colors[0];
+    context.fillStyle = split_complementary_colors[0];
     context.fillRect(150,(row_size * 15)-20,140,30);
     context.fillStyle = split_complementary_colors[1];
     context.fillRect(150,(row_size * 16)-20,140,30);
@@ -616,7 +610,7 @@ function ChroMyGoodness(){
     context.fillRect(150,(row_size * 17)-20,140,30);        
     
     // Triadic colors swatches
-      context.fillStyle = triadic_colors[0];
+    context.fillStyle = triadic_colors[0];
     context.fillRect(150,(row_size * 19)-20,140,30);
     context.fillStyle = triadic_colors[1];
     context.fillRect(150,(row_size * 20)-20,140,30);
@@ -757,19 +751,20 @@ export function SceneChange(scene_number, title, instructions){
     else if(scene_number === 5){
         SelectImages();
     }
- 
+
 } // / SceneChange()
 
 function ClearScene(){
-    
+
     // Okay look this isn't the "best" way to do this but... well, it works and this is just a prototype :-P
     document.getElementById("MainMenu").style.display = "none";
     document.getElementById("ChroMyGoodness").style.display = "none";
     document.getElementById("SelectImages").style.display = "none";
-    
+    document.getElementById('continueSwatchButtonHueGoingMyWay').style.display = "none";
+
     while(window.scene.children.length > 0){         
         window.scene.remove(window.scene.children[0]);     
-    }    
+    }
 } // / ClearScene()
 
 ///////////////////////////////////
@@ -829,9 +824,9 @@ function MouseClick(event){
     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1; 
 
     var collisions = Raycast(); // Are we over anything?
-    
+
     if (collisions.length > 0){
-              
+
         // The first object the ray collided with is our selection
         var selection = collisions[0].object;
         
@@ -844,9 +839,15 @@ function MouseClick(event){
         else if(window.current_scene === 3){
             HueGoingMyWayMouseClickHandeler(selection);
         }
+        /*
         else if(window.current_scene === 4){
             // No Raycasting for Scene 4 - Chro-my-goodness
         }
+        else if(window.current_scene === 5){
+            // No Raycasting for Scene 5 - SelectImages
+        }
+        */
+        
     }
 } // / MouseClick()
 
