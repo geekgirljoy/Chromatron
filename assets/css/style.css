@@ -30,7 +30,7 @@ label{
 
 input[type=button], input[type=submit], input[type=reset], input[type=file] {
     background-color: rgb(64, 255, 0);
-    background-image: linear-gradient(rgb(64, 255, 0), black);
+    background-image: linear-gradient(rgb(64, 64, 64), black);
     font-family: 'Pacifico';
     border: none;
     color: white;

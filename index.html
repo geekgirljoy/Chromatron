@@ -16,11 +16,12 @@
             <script type="module" src="./assets/js/chromatron.js"></script>
             <script type="module">
 
-                // Import CopyToClipboard, SceneChange, Animate & LoadCompareImage
+                // Import CopyToClipboard, SceneChange, Animate, LoadCompareImage & SelectPixelColorFromImage
                 import {CopyToClipboard} from './assets/js/chromatron.js';
                 import {SceneChange} from './assets/js/chromatron.js';
                 import {Animate} from './assets/js/chromatron.js';
                 import {LoadCompareImage} from './assets/js/chromatron.js';
+                import {SelectPixelColorFromImage} from './assets/js/chromatron.js';
 
                 // Scene 0 - Main Menu
                 SceneChange(0, 'Chromatron: MainMenu', 'Welcome, the Chromatron is here to help find your favorite color.');
@@ -37,7 +38,9 @@
                 window.LoadCompareImage = function(input, canvas){
                     LoadCompareImage(input, canvas);
                 }
-
+                window.SelectPixelColorFromImage = function(event, swatch_label){
+                    SelectPixelColorFromImage(event, swatch_label);
+                }
             </script>
         </center>
 
@@ -47,7 +50,7 @@
                 <p class='instructions2'>Welcome, the Chromatron is here to help find favorite color.</p>
                 <button id='selectCarouselOfColor' class='button' onclick="SceneChange(1, 'Chromatron: Carousel of Color', 'Select the color that seems closest to your favorite color')">Carousel of Color</button>
                 <br/>
-                <button id='selectCompareImageColors' class='button' onclick="SceneChange(5, 'Chromatron: Select Images', 'Select two Images')">Compare Colors in Images</button>
+                <button id='selectCompareImageColors' class='button' onclick="SceneChange(5, 'Chromatron: Select Images', 'Select two Images and pick a color from each.')">Compare Colors in Images</button>
             </center>            
         </div>
         
@@ -76,17 +79,17 @@
         <!-- Scene 5 -->
         <div id="SelectImages">
             <center>
-            <p class='instructions2'>Select two images.</p>
+            <p class='instructions2'>Select two Images and pick a color from each.</p>
                 <button id='' class='button' onclick="SceneChange(0, 'Welcome, the Chromatron is here to help find your favorite color.')">Continue &#x3e;</button><br/>
     
                     <label>Image A:</label><br/><br/>
                     <input class='button' type="file" id="inputA" name="inputA" onchange='LoadCompareImage("inputA", "CanvasA")'/>
-                    <canvas id="CanvasA" style='max-width:500px; max-height:320px'></canvas><br/>
-                    
-                    
+                    <canvas id="CanvasA" style='max-width:500px; max-height:320px;cursor: crosshair;' onclick="SelectPixelColorFromImage(event, 'inputA')"></canvas><br/>
+
                     <label>Image B:</label><br/><br/>
                     <input class='button' type="file" id="inputB" name="inputB" onchange='LoadCompareImage("inputB", "CanvasB")'/>
-                    <canvas id="CanvasB" style='max-width:500px; max-height:320px'></canvas><br/>
+                    <canvas id="CanvasB" style='max-width:500px; max-height:320px;cursor: crosshair;' onclick="SelectPixelColorFromImage(event, 'inputB')"></canvas><br/>
+
             </center>        
         </div>
 

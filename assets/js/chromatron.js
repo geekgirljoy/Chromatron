@@ -65,7 +65,6 @@ window.highlighted_objects = [];
 window.scene_objects = [];
 
 
-
 var colors ={
     // The world is a carousel of color,
     // Wonderful, wonderful color.
@@ -188,10 +187,10 @@ function CarouselOfColor(){
 
 //////////////////////////////////////////
 //                                      //
-//    Scene 2 : Color Conformation      //
+//    Scene 2 : Color Confirmation      //
 //                                      //
 //////////////////////////////////////////
-function ColorConformation(){
+function ColorConfirmation(){
     // Display the color
     var swatch_geometry = new THREE.BoxGeometry(1, 0.3, 0.01);
     var swatch_texture = new THREE.Texture(GenerateGradientTexture(colors[window.base_color], [0,0,0]));
@@ -226,7 +225,7 @@ function ColorConformation(){
     window.scene.add(go_back_btn);
     window.scene_objects.push(go_back_btn);
 
-}// / ColorConformation()
+}// / ColorConfirmation()
 
 
 //////////////////////////////////////////
@@ -644,12 +643,12 @@ function ChroMyGoodness(){
 } // / ChroMyGoodness()
 
 
-
 //////////////////////////////////////////
 //                                      //
 //    Scene 5 : Select Images           //
 //                                      //
 //////////////////////////////////////////
+
 function SelectImages(){
 
     // Show the overlay "scene"
@@ -677,7 +676,7 @@ export function Animate(){
            segment.rotation.y += 0.0075;
         });
     }
-    else if(window.current_scene === 2){ // Color Conformation 
+    else if(window.current_scene === 2){ // Color Confirmation 
     
         // For all the cube buttons
         window.scene_objects.forEach(function(scene_element){
@@ -740,7 +739,7 @@ export function SceneChange(scene_number, title, instructions){
         CarouselOfColor();
     }
     else if(scene_number === 2){
-        ColorConformation();
+        ColorConfirmation();
     }
     else if(scene_number === 3){
         HueGoingMyWay();
@@ -834,7 +833,7 @@ function MouseClick(event){
             CarouselOfColorMouseClickHandeler(selection);
         }
         else if(window.current_scene === 2){
-            ColorConformationMouseClickHandeler(selection);
+            ColorConfirmationMouseClickHandeler(selection);
         }
         else if(window.current_scene === 3){
             HueGoingMyWayMouseClickHandeler(selection);
@@ -861,7 +860,7 @@ function CarouselOfColorMouseClickHandeler(selection){
         window.base_color = selection.color;
         //selection.color & window.base_color === the key to the selected color
         
-        SceneChange(2, 'Chromatron: Color Conformation', 'Continue with this color?');
+        SceneChange(2, 'Chromatron: Color Confirmation', 'Continue with this color?');
         
     } // / clicked the carousel
     
@@ -869,7 +868,7 @@ function CarouselOfColorMouseClickHandeler(selection){
 
 
 
-function ColorConformationMouseClickHandeler(selection){
+function ColorConfirmationMouseClickHandeler(selection){
     
     if(selection.type === 'button'){ // clicked on a button
 
@@ -883,7 +882,7 @@ function ColorConformationMouseClickHandeler(selection){
         }
 
     } // / clicked on a button
-} // / ColorConformationMouseClickHandeler()
+} // / ColorConfirmationMouseClickHandeler()
 
 
 function HueGoingMyWayMouseClickHandeler(selection){
@@ -977,7 +976,7 @@ function RGBColorToHexString(rgb_array) {
     });
 
     return "#" + hex_string;
-}
+} // / RGBColorToHexString()
 
 
 
@@ -995,7 +994,7 @@ function ComplementaryRGBColor(rgb_array){
     var color_b = 255 - rgb_array[2];
 
     return [color_r, color_g, color_b];
-}
+} // / ComplementaryRGBColor()
 //console.log(ComplementaryRGBColor([0,0,0])); // [255, 255, 255]
 
 
@@ -1064,7 +1063,7 @@ function RGBToHSL(rgb_array){
 
   // Return RGB() -> HSL()
   return [color['hue'], color['saturation'], color['lightness']]; 
-}
+} // / RGBToHSL()
 //console.log(RGBToHSL([128,0,0])); // [0, 1, 0.25098039215686274];
 
 
@@ -1123,7 +1122,7 @@ function HSLtoRGB(hsl_array){
     
     // Return HSL() -> RGB()
     return [Math.round(color['red']), Math.round(color['green']), Math.round(color['blue'])];
-}
+} // / HSLtoRGB()
 //console.log(HSLtoRGB([0, 1, 0.25098039215686])); // [128,0,0];
 
 
@@ -1254,6 +1253,7 @@ function Text(parent_obj, text_string, color, size, x, y, z, rot_x = 0, rot_y = 
 } // / Text()
 
 
+
 function TextAsTexture(texture_color_start, texture_color_end, text_value, text_size, text_color, text_x, text_y){
 
     // convert [r,g,b] to #rrggbb
@@ -1281,6 +1281,7 @@ function TextAsTexture(texture_color_start, texture_color_end, text_value, text_
     return canvas;
 
 } // / TextAsTexture()
+
 
 
 function CubeButton(button_size, button_color_start, button_color_end, x, y, z, text_value, text_size, text_color, text_x = (512/2), text_y = (512/2), text_3D = false){
@@ -1316,7 +1317,7 @@ function CubeButton(button_size, button_color_start, button_color_end, x, y, z, 
     btn.position.z = z;
     
     return btn;
-}
+} // / CubeButton()
 
 
 ///////////////////////////////////
@@ -1344,10 +1345,45 @@ export function LoadCompareImage(input, canvas){
             context.drawImage(image,0,0);
         }
         image.src = event.target.result;
+        
+        
     } 
     file.readAsDataURL(input.files[0]);     
-}
-        
+} // / LoadCompareImage()
+
+
+
+export function SelectPixelColorFromImage(event, swatch_label){
+    
+    // Where the image is
+    var canvas = document.getElementById(event.target.id);
+    var context = canvas.getContext('2d');
+    var rect = canvas.getBoundingClientRect();
+    
+    // Where the mouse is
+    var x = event.clientX - rect.left; 
+    var y = event.clientY - rect.top; 
+
+    // The canvas has a max-height & max-width css property making the
+    // mouse position not be the X & Y of the canvas in relation to the image dimensions
+    // so we need to figure out how much smaller the image is inside the canvas
+    var horizontal_ratio = canvas.width / canvas.offsetWidth;
+    var vertical_ratio = canvas.height / canvas.offsetHeight;
+    x = Math.round(x*horizontal_ratio);
+    y = Math.round(y*vertical_ratio);
+    
+    // Get the pixel color as an RGBA array
+    var rgba = context.getImageData(x, y, 1, 1).data;
+    
+    // Store the color as a SelectedColor property
+    // on the canvas element, cuz... why not?
+    canvas.SelectedColor = rgba;
+    
+    // Update the label swatch color
+    document.getElementById(swatch_label).style.backgroundImage = 'linear-gradient('+ 'rgb('+rgba[0] + ',' + rgba[1] + ',' + rgba[2] + ')' + ', ' + 'black)';
+} // / SelectPixelColorFromImage()
+
+
 ///////////////////////////////////
 // / Image Functions             //
 ///////////////////////////////////
