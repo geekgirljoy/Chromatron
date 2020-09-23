@@ -41,6 +41,7 @@
                 window.SelectPixelColorFromImage = function(event, swatch_label){
                     SelectPixelColorFromImage(event, swatch_label);
                 }
+                
             </script>
         </center>
 
@@ -70,7 +71,7 @@
 
                 <canvas id="myFavoriteColor" style="border:1px solid #cccccc;"></canvas>
 
-                <a id="downloadImageButton" id='downloadImageButton' class='button'>Save Image</a>                
+                <a id="downloadImageButton" class='button downloadImageButton'>Save Image</a>                
                 <button id='copyToClipboardButton' class='button' onclick="CopyToClipboard()">Copy as Text</button>
 
             </center>
@@ -80,8 +81,8 @@
         <div id="SelectImages">
             <center>
             <p class='instructions2'>Select two Images and pick a color from each.</p>
-                <button id='' class='button' onclick="SceneChange(0, 'Welcome, the Chromatron is here to help find your favorite color.')">Continue &#x3e;</button><br/>
-    
+                    <button id='compareColorsButton' class='button' onclick="SceneChange(6, 'Chromatron: Juxtaposed Chro-my-goodness!!', 'Chro-my-goodness these are nice colors!')">Continue &#x3e;</button><br/>
+        
                     <label>Image A:</label><br/><br/>
                     <input class='button' type="file" id="inputA" name="inputA" onchange='LoadCompareImage("inputA", "CanvasA")'/>
                     <canvas id="CanvasA" style='max-width:500px; max-height:320px;cursor: crosshair;' onclick="SelectPixelColorFromImage(event, 'inputA')"></canvas><br/>
@@ -91,6 +92,25 @@
                     <canvas id="CanvasB" style='max-width:500px; max-height:320px;cursor: crosshair;' onclick="SelectPixelColorFromImage(event, 'inputB')"></canvas><br/>
 
             </center>        
+        </div>
+        
+        <!-- Scene 6 -->
+        <div id="JuxtaposedChroMyGoodness">
+
+            <button id='gobackButtonJuxtaposedChroMyGoodness' class='button' onclick="SceneChange(5, 'Chromatron: Select Images', 'Select two Images and pick a color from each.')">&#x3c; Go Back</button>
+
+            <button id='startOverButton' class='button' onclick="SceneChange(0, 'Chromatron: MainMenu', 'Welcome, the Chromatron is here to help find your favorite color.')">Main Menu</button>
+
+            <center>
+                <h1>Your Favorite Color</h1>
+                <p class='instructions2'>Chro-my-goodness these are nice colors!</p>
+
+                <canvas id="myFavoriteColors" style="border:1px solid #cccccc;"></canvas>
+
+                <a id="downloadImageButton2" class='button downloadImageButton'>Save Image</a>                
+                <button id='copyToClipboardButton' class='button' onclick="CopyToClipboard()">Copy as Text</button>
+
+            </center>
         </div>
 
     </body>

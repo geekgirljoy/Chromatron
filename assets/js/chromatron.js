@@ -648,12 +648,402 @@ function ChroMyGoodness(){
 //    Scene 5 : Select Images           //
 //                                      //
 //////////////////////////////////////////
-
+window.SelectImagesCanvases = ['CanvasA', 'CanvasB'];
 function SelectImages(){
 
     // Show the overlay "scene"
     document.getElementById("SelectImages").style.display = "block";
-}
+} // / ChroMyGoodness()
+
+
+/////////////////////////////////////////////////
+//                                             //
+//    Scene 6 : Juxtaposed-Chro-my-goodness!!  //
+//                                             //
+/////////////////////////////////////////////////
+
+function JuxtaposedChroMyGoodness(){
+    
+        
+    var width = 600;
+    var height = 950;
+    var margin = 10;
+    var row_size = 32;
+    
+    var rbga_A = document.getElementById("CanvasA").SelectedColor;
+    var rbga_B = document.getElementById("CanvasB").SelectedColor;
+
+    var canvas = document.getElementById("myFavoriteColors");
+    var context = canvas.getContext("2d");
+    
+    // Make sure the canvas is large enough
+    canvas.height = height;
+    canvas.width = width;
+    
+    
+
+    // Calculate RGB, HSL & Hex for the favorite color 1
+    var fav_color_rgb = 'rgb('+rbga_A[0]+', '+rbga_A[1]+', '+rbga_A[2]+')';
+    var fav_color_hsl = RGBToHSL([rbga_A[0],rbga_A[1], rbga_A[2]]);
+    var fav_color_hex = RGBColorToHexString([rbga_A[0],rbga_A[1], rbga_A[2]]);
+    var degrees =  360 / 12;
+    
+    // Calculate Analogous colors
+    var analogous_colors = [];
+    analogous_colors[0] = fav_color_hsl.slice();
+    var h = RotateHue(fav_color_hsl[0], -degrees);
+    analogous_colors[0][0] = h;
+    analogous_colors[0] = RGBColorToHexString(HSLtoRGB(analogous_colors[0]));
+    analogous_colors[1] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], degrees);
+    analogous_colors[1][0] = h;
+    analogous_colors[1] = RGBColorToHexString(HSLtoRGB(analogous_colors[1]));
+    
+    // Calculate complementary color
+    var complementary_color_hex = RGBColorToHexString(ComplementaryRGBColor([rbga_A[0],rbga_A[1], rbga_A[2]]));
+
+    // Calculate split complementary colors
+    var split_complementary_colors = [];
+    split_complementary_colors[0] = fav_color_hex;
+    split_complementary_colors[1] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], -(degrees*5));
+    split_complementary_colors[1][0] = h;
+    split_complementary_colors[1] = RGBColorToHexString(HSLtoRGB(split_complementary_colors[1]));
+    split_complementary_colors[2] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], (degrees*5));
+    split_complementary_colors[2][0] = h;
+    split_complementary_colors[2] = RGBColorToHexString(HSLtoRGB(split_complementary_colors[2]));
+
+    // Calculate Triadic color
+    var triadic_colors = [];
+    triadic_colors[0] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], -(degrees*4));
+    triadic_colors[0][0] = h;
+    triadic_colors[0] = RGBColorToHexString(HSLtoRGB(triadic_colors[0]));
+    triadic_colors[1] = fav_color_hex;    
+    triadic_colors[2] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], (degrees*4));
+    triadic_colors[2][0] = h;
+    triadic_colors[2] = RGBColorToHexString(HSLtoRGB(triadic_colors[2]));
+
+    // Calculate Tetradic color
+    var tetradic_colors = [];
+    tetradic_colors[0] = fav_color_hex;    
+     tetradic_colors[1] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], (degrees*2));
+    tetradic_colors[1][0] = h;
+    tetradic_colors[1] = RGBColorToHexString(HSLtoRGB(tetradic_colors[1]));
+    tetradic_colors[2] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], (degrees*6));
+    tetradic_colors[2][0] = h;
+    tetradic_colors[2] = RGBColorToHexString(HSLtoRGB(tetradic_colors[2]));
+    tetradic_colors[3] = fav_color_hsl.slice();
+    h = RotateHue(fav_color_hsl[0], -(degrees*4));
+    tetradic_colors[3][0] = h;
+    tetradic_colors[3] = RGBColorToHexString(HSLtoRGB(tetradic_colors[3]));
+
+
+
+
+
+    // Calculate RGB, HSL & Hex for the favorite color 2
+    var fav_color_rgb2 = 'rgb('+rbga_B[0]+', '+rbga_B[1]+', '+rbga_B[2]+')';
+    var fav_color_hsl2 = RGBToHSL([rbga_B[0],rbga_B[1], rbga_B[2]]);
+    var fav_color_hex2 = RGBColorToHexString([rbga_B[0],rbga_B[1], rbga_B[2]]);
+    
+    // Calculate Analogous colors
+    var analogous_colors2 = [];
+    analogous_colors2[0] = fav_color_hsl2.slice();
+    h = RotateHue(fav_color_hsl2[0], -degrees);
+    analogous_colors2[0][0] = h;
+    analogous_colors2[0] = RGBColorToHexString(HSLtoRGB(analogous_colors2[0]));
+    analogous_colors2[1] = fav_color_hsl2.slice();
+    h = RotateHue(fav_color_hsl2[0], degrees);
+    analogous_colors2[1][0] = h;
+    analogous_colors2[1] = RGBColorToHexString(HSLtoRGB(analogous_colors2[1]));
+    
+    // Calculate complementary color
+    var complementary_color_hex2 = RGBColorToHexString(ComplementaryRGBColor([rbga_B[0], rbga_B[1], rbga_B[2]]));
+
+    // Calculate split complementary colors
+    var split_complementary_colors2 = [];
+    split_complementary_colors2[0] = fav_color_hex2;
+    split_complementary_colors2[1] = fav_color_hsl2.slice();
+    h = RotateHue(fav_color_hsl2[0], -(degrees*5));
+    split_complementary_colors2[1][0] = h;
+    split_complementary_colors2[1] = RGBColorToHexString(HSLtoRGB(split_complementary_colors2[1]));
+    split_complementary_colors2[2] = fav_color_hsl2.slice();
+    h = RotateHue(fav_color_hsl2[0], (degrees*5));
+    split_complementary_colors2[2][0] = h;
+    split_complementary_colors2[2] = RGBColorToHexString(HSLtoRGB(split_complementary_colors2[2]));
+
+    // Calculate Triadic color
+    var triadic_colors2 = [];
+    triadic_colors2[0] = fav_color_hsl2.slice();
+    h = RotateHue(fav_color_hsl2[0], -(degrees*4));
+    triadic_colors2[0][0] = h;
+    triadic_colors2[0] = RGBColorToHexString(HSLtoRGB(triadic_colors2[0]));
+    triadic_colors2[1] = fav_color_hex2;    
+    triadic_colors2[2] = fav_color_hsl2.slice();
+    h = RotateHue(fav_color_hsl2[0], (degrees*4));
+    triadic_colors2[2][0] = h;
+    triadic_colors2[2] = RGBColorToHexString(HSLtoRGB(triadic_colors2[2]));
+
+    // Calculate Tetradic color
+    var tetradic_colors2 = [];
+    tetradic_colors2[0] = fav_color_hex2;    
+    tetradic_colors2[1] = fav_color_hsl2.slice();
+    h = RotateHue(fav_color_hsl2[0], (degrees*2));
+    tetradic_colors2[1][0] = h;
+    tetradic_colors2[1] = RGBColorToHexString(HSLtoRGB(tetradic_colors2[1]));
+    tetradic_colors2[2] = fav_color_hsl2.slice();
+    h = RotateHue(fav_color_hsl2[0], (degrees*6));
+    tetradic_colors2[2][0] = h;
+    tetradic_colors2[2] = RGBColorToHexString(HSLtoRGB(tetradic_colors2[2]));
+    tetradic_colors2[3] = fav_color_hsl2.slice();
+    h = RotateHue(fav_color_hsl2[0], -(degrees*4));
+    tetradic_colors2[3][0] = h;
+    tetradic_colors2[3] = RGBColorToHexString(HSLtoRGB(tetradic_colors2[3]));
+
+
+
+    // Calc above
+    
+    //Store colors as text string for copy to clipboard.
+    window.ClipboardText = 'Your Favorite Colors:\n'
+    window.ClipboardText += '\nFirst:\n'
+    window.ClipboardText += 'RGB: ' + rbga_A[0]+', '+rbga_A[1]+', '+rbga_A[2] + '\n';
+    window.ClipboardText += 'HSL: ' + fav_color_hsl[0].toFixed(3)+', '+(fav_color_hsl[1] * 100).toFixed(1) + '%'+', '+(fav_color_hsl[2] * 100).toFixed(1) + '%\n';
+    window.ClipboardText += 'HEX: ' + fav_color_hex + '\n';
+    window.ClipboardText += 'Analogous Colors: ' + analogous_colors[0] + ', ' + analogous_colors[1] + '\n';
+    window.ClipboardText += 'Split Complementary Colors: ' + split_complementary_colors[0] + ', ' + split_complementary_colors[1] + ', ' + split_complementary_colors[2] + '\n';
+    window.ClipboardText += 'Triadic Colors: ' + triadic_colors[0] + ', ' + triadic_colors[1] + ', ' + triadic_colors[2] + '\n';
+    window.ClipboardText += 'Tetradic Colors: ' + tetradic_colors[0] + ', ' + tetradic_colors[1] + ', ' + tetradic_colors[2] + '\n';
+    
+    window.ClipboardText += '\nSecond:\n'
+    window.ClipboardText += 'RGB: ' + rbga_B[0]+', '+rbga_B[1]+', '+rbga_B[2] + '\n';
+    window.ClipboardText += 'HSL: ' + fav_color_hsl2[0].toFixed(3)+', '+(fav_color_hsl2[1] * 100).toFixed(1) + '%'+', '+(fav_color_hsl2[2] * 100).toFixed(1) + '%\n';
+    window.ClipboardText += 'HEX: ' + fav_color_hex2 + '\n';
+    window.ClipboardText += 'Analogous Colors: ' + analogous_colors2[0] + ', ' + analogous_colors2[1] + '\n';
+    window.ClipboardText += 'Split Complementary Colors: ' + split_complementary_colors2[0] + ', ' + split_complementary_colors2[1] + ', ' + split_complementary_colors2[2] + '\n';
+    window.ClipboardText += 'Triadic Colors: ' + triadic_colors2[0] + ', ' + triadic_colors2[1] + ', ' + triadic_colors2[2] + '\n';
+    window.ClipboardText += 'Tetradic Colors: ' + tetradic_colors2[0] + ', ' + tetradic_colors2[1] + ', ' + tetradic_colors2[2] + '\n';    
+    window.ClipboardText += '\n\nChromatron: https://geekgirljoy.github.io/Chromatron/\n';
+    window.ClipboardText += 'Created By: https://geekgirljoy.wordpress.com/';
+    
+    // Draw below
+    
+    // Create background
+    context.fillStyle = '#000000';
+    context.fillRect(0, 0, width, height);
+        
+    // Create "Your Favorite Color" swatch 1
+    context.fillStyle = fav_color_rgb;
+    context.fillRect(margin,margin,290 - margin, 50);
+
+    // Create Labels
+    context.fillStyle = '#ffffff';
+    context.font = "16px Arial";
+    context.fillText("RGB", margin, (row_size * 3));
+    context.fillText('('+rbga_A[0]+', '+rbga_A[1]+', '+rbga_A[2]+')', margin+120, (row_size * 3));
+    context.fillText("HSL", margin, (row_size * 4));
+    context.fillText('('+fav_color_hsl[0].toFixed(3)+', '+(fav_color_hsl[1] * 100).toFixed(1) + '%'+', '+(fav_color_hsl[2] * 100).toFixed(1) + '%)', margin+80, (row_size * 4));
+    context.fillText("HEX", margin, (row_size * 5));
+    context.fillText(fav_color_hex, margin+140, (row_size * 5));
+    context.fillText("Gradients", 115, (row_size * 6));  
+    context.fillText("Gradient to White", margin, (row_size * 7));
+    context.fillText("Gradient to Black", margin, (row_size * 8));
+    context.fillText("Analogous Colors", 85, (row_size * 9));
+    context.fillText(analogous_colors[0], margin, (row_size * 10));
+    context.fillText(analogous_colors[1], margin, (row_size * 11));
+    context.fillText("Complementary Color", 65, (row_size * 12));
+    context.fillText(complementary_color_hex, margin, (row_size * 13));
+    context.fillText("Split Complementary Colors", 45, (row_size * 14));
+    context.fillText(split_complementary_colors[0], margin, (row_size * 15));
+    context.fillText(split_complementary_colors[1], margin, (row_size * 16));
+    context.fillText(split_complementary_colors[2], margin, (row_size * 17));
+    context.fillText("Triadic Colors", 95, (row_size * 18));
+    context.fillText(triadic_colors[0], margin, (row_size * 19));
+    context.fillText(triadic_colors[1], margin, (row_size * 20));
+    context.fillText(triadic_colors[2], margin, (row_size * 21));
+    context.fillText("Tetradic Colors", 90, (row_size * 22));
+    context.fillText(tetradic_colors[0], margin, (row_size * 23));
+    context.fillText(tetradic_colors[1], margin, (row_size * 24));
+    context.fillText(tetradic_colors[2], margin, (row_size * 25));
+    context.fillText(tetradic_colors[3], margin, (row_size * 26));
+    context.fillText("https://geekgirljoy.github.io/Chromatron/", (width / 4), (row_size * 28));
+    context.fillText("https://geekgirljoy.wordpress.com/", (width / 4)+20, (row_size * 29));
+
+
+
+    // Create Swatches
+    // Gradient fav -> white swatch
+    var grd = context.createLinearGradient(150,(row_size * 7) - 20, 300,290 - (margin * 2));
+    grd.addColorStop(0, fav_color_rgb);
+    grd.addColorStop(1,"white");
+    context.fillStyle = grd;
+    context.fillRect(150,(row_size * 7) - 20,140,30);
+      
+    // Gradient fav -> black swatch
+    grd = context.createLinearGradient(150,(row_size * 8) - 20, 300,290 - (margin * 2));
+    grd.addColorStop(0, fav_color_rgb);
+    grd.addColorStop(1,"black");
+    context.fillStyle = grd;
+    context.fillRect(150,(row_size * 8) - 20,140,30);
+  
+    // Analogous colors swatches
+    context.fillStyle = analogous_colors[0];
+    context.fillRect(150,(row_size * 10)-20,140,30);
+    context.fillStyle = analogous_colors[1];
+    context.fillRect(150,(row_size * 11)-20,140,30);
+    
+    // Complementary color swatch
+    context.fillStyle = complementary_color_hex;
+    context.fillRect(150,(row_size * 13)-20,140,30);
+        
+    // Split complementary colors swatches
+    context.fillStyle = split_complementary_colors[0];
+    context.fillRect(150,(row_size * 15)-20,140,30);
+    context.fillStyle = split_complementary_colors[1];
+    context.fillRect(150,(row_size * 16)-20,140,30);
+    context.fillStyle = split_complementary_colors[2];
+    context.fillRect(150,(row_size * 17)-20,140,30);        
+    
+    // Triadic colors swatches
+    context.fillStyle = triadic_colors[0];
+    context.fillRect(150,(row_size * 19)-20,140,30);
+    context.fillStyle = triadic_colors[1];
+    context.fillRect(150,(row_size * 20)-20,140,30);
+    context.fillStyle = triadic_colors[2];
+    context.fillRect(150,(row_size * 21)-20,140,30);
+    
+    // Tetradic colors swatches
+      context.fillStyle = tetradic_colors[0];
+    context.fillRect(150,(row_size * 23)-20,140,30);
+    context.fillStyle = tetradic_colors[1];
+    context.fillRect(150,(row_size * 24)-20,140,30);
+    context.fillStyle = tetradic_colors[2];
+    context.fillRect(150,(row_size * 25)-20,140,30);
+    context.fillStyle = tetradic_colors[3];
+    context.fillRect(150,(row_size * 26)-20,140,30);
+    
+        
+    // Create "Your Favorite Color" swatch 2
+    var offset = 290 + margin;
+    
+    context.fillStyle = fav_color_rgb2;
+    context.fillRect(offset + margin, margin, 290 - margin, 50);
+
+    // Create Labels
+    context.fillStyle = '#ffffff';
+    context.font = "16px Arial";
+    context.fillText("RGB", offset + margin, (row_size * 3));
+    context.fillText('('+rbga_B[0]+', '+rbga_B[1]+', '+rbga_B[2]+')', offset + margin+120, (row_size * 3));
+    context.fillText("HSL", offset + margin, (row_size * 4));
+    context.fillText('('+fav_color_hsl2[0].toFixed(3)+', '+(fav_color_hsl2[1] * 100).toFixed(1) + '%'+', '+(fav_color_hsl2[2] * 100).toFixed(1) + '%)', offset + margin+80, (row_size * 4));
+    context.fillText("HEX", offset + margin, (row_size * 5));
+    context.fillText(fav_color_hex2, offset + margin+140, (row_size * 5));
+    context.fillText("Gradients", offset + 115, (row_size * 6));  
+    context.fillText("Gradient to White", offset + margin, (row_size * 7));
+    context.fillText("Gradient to Black", offset + margin, (row_size * 8));
+    context.fillText("Analogous Colors", offset + 85, (row_size * 9));
+    context.fillText(analogous_colors2[0], offset + margin, (row_size * 10));
+    context.fillText(analogous_colors2[1], offset + margin, (row_size * 11));
+    context.fillText("Complementary Color", offset + 65, (row_size * 12));
+    context.fillText(complementary_color_hex2, offset + margin, (row_size * 13));
+    context.fillText("Split Complementary Colors", offset + 45, (row_size * 14));
+    context.fillText(split_complementary_colors2[0], offset + margin, (row_size * 15));
+    context.fillText(split_complementary_colors2[1], offset + margin, (row_size * 16));
+    context.fillText(split_complementary_colors2[2], offset + margin, (row_size * 17));
+    context.fillText("Triadic Colors", offset + 95, (row_size * 18));
+    context.fillText(triadic_colors2[0], offset + margin, (row_size * 19));
+    context.fillText(triadic_colors2[1], offset + margin, (row_size * 20));
+    context.fillText(triadic_colors2[2], offset + margin, (row_size * 21));
+    context.fillText("Tetradic Colors", offset + 90, (row_size * 22));
+    context.fillText(tetradic_colors2[0], offset + margin, (row_size * 23));
+    context.fillText(tetradic_colors2[1], offset + margin, (row_size * 24));
+    context.fillText(tetradic_colors2[2], offset + margin, (row_size * 25));
+    context.fillText(tetradic_colors2[3], offset + margin, (row_size * 26));
+    context.fillText("https://geekgirljoy.github.io/Chromatron/", (width / 4), (row_size * 28));
+    context.fillText("https://geekgirljoy.wordpress.com/", (width / 4)+20, (row_size * 29));
+
+
+    // Create Swatches
+    // Gradient fav -> white swatch
+    grd = context.createLinearGradient(offset+150,(row_size * 7) - 20, width-margin,290 - (margin * 2));
+    grd.addColorStop(0, fav_color_rgb2);
+    grd.addColorStop(1,"white");
+    context.fillStyle = grd;
+    context.fillRect(offset+150,(row_size * 7) - 20,140,30);
+      
+    // Gradient fav -> black swatch
+    grd = context.createLinearGradient(offset+150,(row_size * 8) - 20, width-margin,290 - (margin * 2));
+    grd.addColorStop(0, fav_color_rgb2);
+    grd.addColorStop(1,"black");
+    context.fillStyle = grd;
+    context.fillRect(offset+150,(row_size * 8) - 20,140,30);
+  
+    // Analogous colors swatches
+    context.fillStyle = analogous_colors2[0];
+    context.fillRect(offset+150,(row_size * 10)-20,140,30);
+    context.fillStyle = analogous_colors2[1];
+    context.fillRect(offset+150,(row_size * 11)-20,140,30);
+    
+    // Complementary color swatch
+    context.fillStyle = complementary_color_hex2;
+    context.fillRect(offset+150,(row_size * 13)-20,140,30);
+        
+    // Split complementary colors swatches
+    context.fillStyle = split_complementary_colors2[0];
+    context.fillRect(offset+150,(row_size * 15)-20,140,30);
+    context.fillStyle = split_complementary_colors2[1];
+    context.fillRect(offset+150,(row_size * 16)-20,140,30);
+    context.fillStyle = split_complementary_colors2[2];
+    context.fillRect(offset+150,(row_size * 17)-20,140,30);        
+    
+    // Triadic colors swatches
+    context.fillStyle = triadic_colors2[0];
+    context.fillRect(offset+150,(row_size * 19)-20,140,30);
+    context.fillStyle = triadic_colors2[1];
+    context.fillRect(offset+150,(row_size * 20)-20,140,30);
+    context.fillStyle = triadic_colors2[2];
+    context.fillRect(offset+150,(row_size * 21)-20,140,30);
+    
+    // Tetradic colors swatches
+    context.fillStyle = tetradic_colors2[0];
+    context.fillRect(offset+150,(row_size * 23)-20,140,30);
+    context.fillStyle = tetradic_colors2[1];
+    context.fillRect(offset+150,(row_size * 24)-20,140,30);
+    context.fillStyle = tetradic_colors2[2];
+    context.fillRect(offset+150,(row_size * 25)-20,140,30);
+    context.fillStyle = tetradic_colors2[3];
+    context.fillRect(offset+150,(row_size * 26)-20,140,30);
+    
+        
+    // Horizontal ruler
+    context.beginPath();
+    context.strokeStyle = '#ffffff';
+    context.moveTo(margin, (row_size * 27));
+    context.lineTo(width - margin, (row_size * 27));
+    context.stroke();
+    
+    // Vertical ruler
+    context.beginPath();
+    context.strokeStyle = '#ffffff';
+    context.moveTo(290 + margin, (row_size * 1) - (margin * 2));
+    context.lineTo(290 + margin, (row_size * 27) - margin);
+    context.stroke(); 
+
+
+    // Make sure the download button points to the canvas data
+    var download_link = document.getElementById('downloadImageButton2');
+    download_link.setAttribute('download', 'MyFavoriteColors.png');
+    download_link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"));
+
+    // Show the overlay "scene"
+    document.getElementById("JuxtaposedChroMyGoodness").style.display = "block";
+    
+} // / JuxtaposedChroMyGoodness()
 
 
 ///////////////////////////////////
@@ -750,6 +1140,11 @@ export function SceneChange(scene_number, title, instructions){
     else if(scene_number === 5){
         SelectImages();
     }
+    else if(scene_number === 6){
+        JuxtaposedChroMyGoodness();
+    }
+    
+
 
 } // / SceneChange()
 
@@ -759,6 +1154,7 @@ function ClearScene(){
     document.getElementById("MainMenu").style.display = "none";
     document.getElementById("ChroMyGoodness").style.display = "none";
     document.getElementById("SelectImages").style.display = "none";
+     document.getElementById("JuxtaposedChroMyGoodness").style.display = "none";
     document.getElementById('continueSwatchButtonHueGoingMyWay').style.display = "none";
 
     while(window.scene.children.length > 0){         
@@ -931,6 +1327,43 @@ export function CopyToClipboard() {
     alert('Copied!\n\n' + window.ClipboardText);
 }
 // / ChroMyGoodness Buttons / "Mouse Functions"
+
+
+// SelectImages Buttons / "Mouse Functions"
+
+document.getElementById("CanvasA").addEventListener("click", function() {
+  SelectPixelColorFromImage(event, 'inputA');
+  ConfirmSelectImagesHasColors();
+}); 
+
+document.getElementById("CanvasB").addEventListener("click", function() {
+  SelectPixelColorFromImage(event, 'inputB');
+  ConfirmSelectImagesHasColors();
+}); 
+
+function ConfirmSelectImagesHasColors(){
+    
+    var showContinueButton = true;
+        
+    window.SelectImagesCanvases.forEach(function(canvas){
+        // Canvas does not have a SelectedColor?
+        if(!document.getElementById(canvas).SelectedColor){
+            showContinueButton = false;
+        }
+    });
+     
+    if(showContinueButton){
+        // Show the compareColorsButton button
+        document.getElementById("compareColorsButton").style.display = "inline-block";
+    }        
+    else{
+        // Do not show the compareColorsButton button
+        document.getElementById("compareColorsButton").style.display = "none";
+    }
+}
+
+// / SelectImages Buttons / "Mouse Functions"
+
 
 
 
@@ -1380,8 +1813,10 @@ export function SelectPixelColorFromImage(event, swatch_label){
     canvas.SelectedColor = rgba;
     
     // Update the label swatch color
-    document.getElementById(swatch_label).style.backgroundImage = 'linear-gradient('+ 'rgb('+rgba[0] + ',' + rgba[1] + ',' + rgba[2] + ')' + ', ' + 'black)';
+    document.getElementById(swatch_label).style.backgroundImage = 'linear-gradient('+ 'rgb(' + rgba[0] + ',' + rgba[1] + ',' + rgba[2] + ')' + ', ' + 'black)';
 } // / SelectPixelColorFromImage()
+
+
 
 
 ///////////////////////////////////
